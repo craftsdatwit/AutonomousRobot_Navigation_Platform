@@ -1,0 +1,17 @@
+<launch>
+
+  <!-- USE: roslaunch my_project urdf_visualize.launch model:='$(find my_project)/urdf/pallet.urdf' -->
+  <arg name="model" default=""/>
+
+
+  <param name="robot_description" command="cat $(arg model)" />
+
+ 
+  
+ 
+
+  <!-- Show in Rviz   -->
+  <!--<node name="rviz" pkg="rviz" type="rviz" args="-d $(find my_project)/rviz_config/urdf.rviz"/>-->
+  <node name="rviz" pkg="rviz" type="rviz" args=""/>
+
+</launch>
