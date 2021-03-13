@@ -6,6 +6,6 @@ import time
 rc = RobotControl()
 
 rc.move_straight()
-time.sleep(5)
-rc.stop_robot()
+center_list = rc.sensor_center() #gets the min sensor value from range
 
+print("Center List", center_list)
