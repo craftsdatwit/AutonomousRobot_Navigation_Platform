@@ -10,10 +10,12 @@ rc = RobotControl() #Declaration of a robot control object
 
 center_list = rc.sensor_center() #gets the min sensor value from range
 
+print(center_list)
+
 rc.move_straight()
 
 
-
+ 
 rospy.spin()
 
 

@@ -5,7 +5,14 @@ import time
 
 rc = RobotControl()
 
-rc.move_straight()
-center_list = rc.sensor_center() #gets the min sensor value from range
+counter = 5
 
-print("Center List", center_list)
+while counter >= 0:
+    print("Counter:", counter)
+    rc.turn("coutner", 1, 3)
+
+    rc.move_straight()
+    time.sleep(12)
+    rc.stop_robot()
+
+    counter= counter -1

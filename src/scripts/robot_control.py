@@ -93,17 +93,20 @@ class RobotControl():
         time.sleep(0)
         return self.laser_msg.ranges
 
+    def sensor_right(self):
+        x = self.laser_msg.ranges[0:339]
+        return min(x)
+
     #Returns smallest distance from an object in the range
     def sensor_left(self):
-        x = self.laser_msg.ranges[400:719]
+        x = self.laser_msg.ranges[381:719]
         return min(x)
 
     #Returns smallest distance from an object in the range
-    def sensor_center(self):
-        x = self.laser_msg.ranges[350:370]
-        return min(x)
+   # def sensor_center(self):
+        #x = self.laser_msg.ranges[]
+        #return min(x)
      
-
 
     def stop_robot(self):
         #rospy.loginfo("shutdown time! Stop the robot")
