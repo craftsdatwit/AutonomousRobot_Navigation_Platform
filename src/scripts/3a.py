@@ -7,44 +7,32 @@ from collections import defaultdict
 
 def callback(dt):
   
-    thr1 = 1.2 # Laser scan range threshold
-    thr2 = 1.2
-
-
-    def isRightFree():
-        right_distnces = dt.ranges[16:110] #Get right distances
-        rd_dict = {}
-        keys = range(94)
-        for i in keys:
-            rd_dict[i] = dt.ranges[i]
-        print(rd_dict)
-
+    laser_threshold = 1.2 # Laser scan range threshold
 
     def getMinCenter():
-        m_dist_cent2 = dt.ranges[345:359] #left of center
-        m_dist_cent1 =  dt.ranges[0:15] #right of center
+        m_dist_cent2 = dt.ranges[345:359] #ranges center and slightly left
+        m_dist_cent1 =  dt.ranges[0:15] #ranges cener and slightly right
+
+        #adds left and right lists together and returns minimum value at any point 
+        #getting the minimum value means any of the center values are blocked. 
         return min(m_dist_cent2 + m_dist_cent1)
-        #return m_dist_cent2 + m_dist_cent1
     
     def getRight():
-       return dt.ranges[16:110]
+       return dt.ranges[16:110] #This gets the right sensor values 
 
     def getLeft():
-       return dt.ranges[250:344]
+       return dt.ranges[250:344] #This gets the left sensor values
 
-    def getMinLeft():
-       return max(dt.ranges[250:349])
+    def getMaxLeft():
+       return max(dt.ranges[250:349]) #This gets the maximum sensor value for any given left point
 
-    def getMinRight():
-       return max(dt.ranges[11:110])
+    def getMaxRight():
+       return max(dt.ranges[16:110]) #This gets the maximum sensor value for any given right point
 
 
-    m_dist_cent = getMinCenter()
-    m_dist_right = getRight()
-    m_dist_left = getLeft()
-
-    minimum_distance_left = getMinLeft()
-    minimum_distance_right = getMinRight()
+    m_dist_cent = getMinCenter() #Get minimum center list 
+    dist_right = getRight() #Get right list 
+    dist_left = getLeft() #Get left list 
 
 
     if m_dist_cent < thr1: #if center is blocked
@@ -56,20 +44,16 @@ def callback(dt):
 
             if i > thr1: #if angle on the right side is greater than the threshold
                 move.angular.z = -0.3 #rotate clockwise
-                move.linear.x = 0.0
+                move.linear.x = 0.0 #don't move forward
             else:
                 for k in m_dist_left:
                     if k > thr1:
                         move.angular.z = -0.3
                         move.linear.x =0
-                   # elif minimum_distance_left > minimum_distance_right:
-                        move.angular.z = 0.3
-                   # elif minimum_distance_right > minimum_distance_left:
-                        move.angular.z = -0.3
 
     else:
-        move.linear.x = 0.1
-        move.angular.z = 0.0
+        move.linear.x = 0.3 #move forward 0.3m/s
+        move.angular.z = 0.0 #don't turn
 
             
 
