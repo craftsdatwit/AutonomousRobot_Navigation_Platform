@@ -7,7 +7,7 @@ from collections import defaultdict
 
 def callback(dt):
   
-    laser_threshold = 1.2 # Laser scan range threshold
+    laser_threshold = 1.2 # Laser scan range threshold in meters
 
     def getMinCenter():
         m_dist_cent2 = dt.ranges[345:359] #ranges center and slightly left
@@ -45,10 +45,11 @@ def callback(dt):
             if i > thr1: #if angle on the right side is greater than the threshold
                 move.angular.z = -0.3 #rotate clockwise
                 move.linear.x = 0.0 #don't move forward
-            else:
-                for k in m_dist_left:
-                    if k > thr1:
-                        move.angular.z = -0.3
+		
+            else: #else (if right is less than)
+                for k in m_dist_left: #for each angle in left
+                    if k > thr1: #if angle is greater than threshold (no object detected
+                        move.angular.z = 0.3 #rotate counter clockwise
                         move.linear.x =0
 
     else:
