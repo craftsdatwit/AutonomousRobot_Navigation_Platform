@@ -35,20 +35,20 @@ def callback(dt):
     dist_left = getLeft() #Get left list 
 
 
-    if m_dist_cent < thr1: #if center is blocked
+    if m_dist_cent < laser_threshold: #if center is blocked
         move.linear.x = 0.0 #stop robot
 
         #CHECK RIGHT SIDE
 
         for i in m_dist_right: #Check each angle on the right side
 
-            if i > thr1: #if angle on the right side is greater than the threshold
+            if i > laser_threshold: #if angle on the right side is greater than the threshold
                 move.angular.z = -0.3 #rotate clockwise
                 move.linear.x = 0.0 #don't move forward
             else:
-                for k in m_dist_left:
-                    if k > thr1:
-                        move.angular.z = -0.3
+                for k in m_dist_left: #for each left value
+                    if k > laser_threshold: #if left value is greater than threshold
+                        move.angular.z = 0.3 #rotate counter clockwise
                         move.linear.x =0
 
     else:
