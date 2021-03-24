@@ -45,16 +45,13 @@ def callback(dt):
             if i > laser_threshold: #if angle on the right side is greater than the threshold
                 move.angular.z = -0.3 #rotate clockwise
                 move.linear.x = 0.0 #don't move forward
-<<<<<<< HEAD:src/Collision Avoidance/Archived Code/3a.py
             else:
                 for k in m_dist_left: #for each left value
                     if k > laser_threshold: #if left value is greater than threshold
-=======
 		
             else: #else (if right is less than)
                 for k in m_dist_left: #for each angle in left
                     if k > thr1: #if angle is greater than threshold (no object detected
->>>>>>> ee853efd62dc396c1f838e601f5f69a5eaebef90:src/scripts/3a.py
                         move.angular.z = 0.3 #rotate counter clockwise
                         move.linear.x =0
 
