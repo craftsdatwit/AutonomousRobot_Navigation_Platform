@@ -34,7 +34,7 @@ rospy.init_node('turtlebot3_waffle_pi_stop_and_wait')
 move = Twist()
 
 #Initialize publisher, which outputs commands to turtlebot
-pub = rospy.Publisher('/cmd_vel',Twist,queue_size=1)
+pub = rospy.Publisher('/cmd_vel',Twist,queue_size=10)
 
 #Initlaize subscriber, which reades in the LIDAR data from the turtlebot LIDAR
 sub = rospy.Subscriber('/scan',LaserScan, stopandwait)
