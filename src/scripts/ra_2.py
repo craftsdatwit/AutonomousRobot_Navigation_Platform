@@ -46,32 +46,39 @@ def goaround(msg):
         right = distances[0:11]
         return min(left+right)
 
-
+    #Check if the right side is free only if the section is wide enough for the robot
     def checkRight():
         print("Checking Right")
 
-        right = msg.ranges[270:347]
+        #Get the right side range
+        right = msg.ranges[270:347] 
 
+        #Gets the max value of the right side range
         maxr = max(right)
+
+        #Gets the index of the maxr value
         indexr = right.index(maxr)
+
+        #Success variable
         success =0
 
+        #If maxr is greater than the stop distance
         if maxr > stopDistance:
-            print(maxr)
-            success +=1
-            for i in right[indexr:]:
-                if i > stopDistance:
+            print(maxr) 
+            success +=1 #add 1 to success variable
+            for i in right[indexr:]: #for i in the right index starting at the max index 
+                if i > stopDistance: #if i is greater than the stop distance
                     #print(i)
-                    success +=1
+                    success +=1 #add one to I
                 else:
                     break
                 if success == 20:
                     break
-            if success == 20:
-                print("Success path found: ", success)
+            if success == 20: #if an opening is found
+                print("Success, opening found: ", success)
                 success = 0
                 rightFree = True
-            else:
+            else: #if no opening is found
                 #print("Failure no path found")
                 success = 0
                 rightFree = False
