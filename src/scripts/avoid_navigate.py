@@ -7,7 +7,7 @@ from sensor_msgs.msg import LaserScan
 
 def goaround(msg):
 
-    stopDistance = 1.0
+    stopDistance = 1.2
 
     scanDistance = 2.0
     
@@ -176,21 +176,11 @@ def goaround(msg):
         #Stop robot
         #stopMoving()
 
-        #SCAN
-        topright = checkTopRight()
-        topleft = checkTopLeft()
-        bottomright = checkBottomRight()
-        bottomleft = checkBottomLeft()
-
         #Set flag
        # print("Waiting now true")
         waited = True
 
-        #SCAN
-        topright = checkTopRight()
-        topleft = checkTopLeft()
-        bottomright = checkBottomRight()
-        bottomleft = checkBottomLeft()
+     
 
         #Set time
         time.sleep(0)
@@ -200,6 +190,7 @@ def goaround(msg):
         #If the center is blocked
     if center < stopDistance and waited:
         #print("If center is blocked and has waited")
+        #SCAN
         topright = checkTopRight()
         topleft = checkTopLeft()
         bottomright = checkBottomRight()
