@@ -7,9 +7,9 @@ from sensor_msgs.msg import LaserScan
 
 def goaround(msg):
 
-    stopDistance = 1.5
+    stopDistance = 1.2
 
-    scanDistance = 3.0
+    scanDistance = 1.0
     
 
     def turnRight():
@@ -64,10 +64,11 @@ def goaround(msg):
                 if success == 20: #if an opening has been found
                     break
             if success == 20: #if an opening is found
+                print("Top right opening found")
                 success = 0
                 toprightfree = True
             else: #if no opening is found
-                #print("Failure no path found")
+                print("No top right opening found")
                 success = 0
                 toprightfree = False
         return toprightfree
@@ -91,9 +92,11 @@ def goaround(msg):
                 if success == 20: 
                     break
             if success == 20: 
+                print("Bottom right opening found")
                 success = 0
                 bottomrightfree = True
             else: 
+                print("No bottom right opening found")
                 success = 0
                 bottomrightfree = False
             return bottomrightfree
@@ -117,9 +120,11 @@ def goaround(msg):
                 if success == 20:
                     break
             if success == 20:
+                print("Top left opening found")
                 success = 0
                 leftFree = True
             else:
+                print("No top left opening found")
                 success = 0
                 leftFree = False
         return leftFree
@@ -143,37 +148,47 @@ def goaround(msg):
                 if success == 20:
                     break
             if success == 20:
+                print("Bottom left opening found")
                 success = 0
                 bottomleftFree = True
             else:
+                print("No bottom left opening found")
                 success = 0
                 bottomleftFree = False
         return bottomleftFree
 
 
     global waited
+    global turning
     global topleft 
     global topright
     global bottomright 
     global bottomleft 
+
+
 
     #Get closest distance from center ranges
     center =  minCenterDistance()
 
 
     if center < stopDistance and not waited:
-        print("Center is blocked and has not waited")
+        #print("Center is blocked and has not waited")
         #Stop robot
-        stopMoving()
+        #stopMoving()
+
+        #SCAN
+        topright = checkTopRight()
+        topleft = checkTopLeft()
+        bottomright = checkBottomRight()
+        bottomleft = checkBottomLeft()
 
         #Set flag
-        print("Waiting now true")
+       # print("Waiting now true")
         waited = True
 
         #SCAN
-
-        topleft = checkTopLeft()
         topright = checkTopRight()
+        topleft = checkTopLeft()
         bottomright = checkBottomRight()
         bottomleft = checkBottomLeft()
 
@@ -185,29 +200,40 @@ def goaround(msg):
         #If the center is blocked
     if center < stopDistance and waited:
         #print("If center is blocked and has waited")
+        topright = checkTopRight()
+        topleft = checkTopLeft()
+        bottomright = checkBottomRight()
+        bottomleft = checkBottomLeft()
 
-        if topright == True: #if right is free
-            print("Turning Right")
+        if topright == True and not turning: #if right is free
+            #print("Turning Right")
+            turning = True
             turnRight()
+         
             #time.sleep(2)
             #goStraight()
 
-        elif topright == False and topleft == True:
+        elif topright == False and topleft == True and not turning:
+            turning = True
             turnLeft()
-            print("Right blocked, turning left")
+            #print("Right blocked, turning left")
 
-        elif topright == False and topleft == False and bottomright == True:
+        elif topright == False and topleft == False and bottomright == True and not turning:
+            turning = True
             turnRight()
-            print("Top right and top left are blocked")
+            #print("Top right and top left are blocked")
 
-        elif topright == False and topleft == False and bottomright == False and bottomleft == True:
+        elif topright == False and topleft == False and bottomright == False and bottomleft == True and not turning:
+            turning = True
+            
             turnLeft()
-            print("Top Right / Left and Bottom Right are blocked")
+            #print("Top Right / Left and Bottom Right are blocked")
         
 
     elif center >= stopDistance:
         waited = False
-        print("Center is not blocked, moving forward")
+        turning = False
+       # print("Center is not blocked, moving forward")
         goStraight()
 
     
