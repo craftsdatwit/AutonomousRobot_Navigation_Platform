@@ -7,21 +7,21 @@ from sensor_msgs.msg import LaserScan
 
 def goaround(msg):
 
-    stopDistance = 1.2
+    stopDistance = 1.0
 
-    scanDistance = 1.0
+    scanDistance = 2.0
     
 
     def turnRight():
         #Turn Right
         move.linear.x = 0.0
-        move.angular.z = -0.2
+        move.angular.z = -0.3
         pub.publish(move)
 
     def turnLeft():
         #Turn left
         move.linear.x = 0.0
-        move.angular.z = 0.2
+        move.angular.z = 0.3
         pub.publish(move)
     
     def goStraight():
@@ -40,9 +40,9 @@ def goaround(msg):
     
     def minCenterDistance():
         distances = getDistances()
-        left = distances[348:359]
-        right = distances[0:11]
-        return min(left+right)
+        right = distances[348:359]
+        left = distances[0:11]
+        return min(right+left)
 
     #Check if top right is clear
     def checkTopRight():
@@ -61,14 +61,14 @@ def goaround(msg):
                     success +=1 #add one to I
                 else: #if in the scan there's an object 
                     break
-                if success == 20: #if an opening has been found
+                if success == 21: #if an opening has been found
                     break
-            if success == 20: #if an opening is found
-                print("Top right opening found")
+            if success == 21: #if an opening is found
+                #print("Top right opening found")
                 success = 0
                 toprightfree = True
             else: #if no opening is found
-                print("No top right opening found")
+                #print("No top right opening found")
                 success = 0
                 toprightfree = False
         return toprightfree
@@ -89,14 +89,14 @@ def goaround(msg):
                     success +=1 
                 else: 
                     break
-                if success == 20: 
+                if success == 21: 
                     break
-            if success == 20: 
-                print("Bottom right opening found")
+            if success == 21: 
+                #print("Bottom right opening found")
                 success = 0
                 bottomrightfree = True
             else: 
-                print("No bottom right opening found")
+                #print("No bottom right opening found")
                 success = 0
                 bottomrightfree = False
             return bottomrightfree
@@ -117,14 +117,14 @@ def goaround(msg):
                     success +=1
                 else:
                     break
-                if success == 20:
+                if success == 21:
                     break
-            if success == 20:
-                print("Top left opening found")
+            if success == 21:
+                #print("Top left opening found")
                 success = 0
                 leftFree = True
             else:
-                print("No top left opening found")
+                #print("No top left opening found")
                 success = 0
                 leftFree = False
         return leftFree
@@ -145,14 +145,14 @@ def goaround(msg):
                     success +=1
                 else:
                     break
-                if success == 20:
+                if success == 21:
                     break
-            if success == 20:
-                print("Bottom left opening found")
+            if success == 21:
+                #print("Bottom left opening found")
                 success = 0
                 bottomleftFree = True
             else:
-                print("No bottom left opening found")
+                #print("No bottom left opening found")
                 success = 0
                 bottomleftFree = False
         return bottomleftFree
@@ -206,8 +206,8 @@ def goaround(msg):
         bottomleft = checkBottomLeft()
 
         if topright == True and not turning: #if right is free
-            #print("Turning Right")
-            turning = True
+            print("Going top right")
+            turning = True 
             turnRight()
          
             #time.sleep(2)
@@ -216,23 +216,23 @@ def goaround(msg):
         elif topright == False and topleft == True and not turning:
             turning = True
             turnLeft()
-            #print("Right blocked, turning left")
+            print("Going top left")
 
         elif topright == False and topleft == False and bottomright == True and not turning:
             turning = True
             turnRight()
-            #print("Top right and top left are blocked")
+            print("Going bottom right")
 
         elif topright == False and topleft == False and bottomright == False and bottomleft == True and not turning:
             turning = True
             
             turnLeft()
-            #print("Top Right / Left and Bottom Right are blocked")
+            print("Going bottom left")
         
 
     elif center >= stopDistance:
         waited = False
-        turning = False
+        turning = False #reset turning
        # print("Center is not blocked, moving forward")
         goStraight()
 
