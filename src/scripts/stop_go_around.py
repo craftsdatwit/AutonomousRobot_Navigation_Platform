@@ -38,8 +38,8 @@ def goaround(msg):
     
     def minCenterDistance():
         distances = getDistances()
-        left = distances[345:359]
-        right = distances[0:15]
+        left = distances[348:359]
+        right = distances[0:11]
         return min(left+right)
     
     global waited
@@ -50,51 +50,55 @@ def goaround(msg):
     #Get closest distance from center ranges
     minDistance =  minCenterDistance()
 
-        
-    if minDistance < stopDistance and waited:
-        print("Im here 3")
-        #Stop robot
-        stopMoving()
-
-        #Move right
-        turnRight()
-
-        #Go straight
-        goStraight(7)
-
-        #Turn Left
-        turnLeft()
-
-        #Go straight
-        goStraight(7)
-
-        #Turn left
-        turnLeft()
-
-        #Go Straight
-        goStraight(7)
-
-        #Turn Right
-        turnRight()
-            
-    if minDistance < stopDistance and not waited:
-        print("Im here 1")
-        #Stop robot
-        stopMoving()
-
-        #Set flag
-        waited = True
-
-        #Set time
-        time.sleep(5)
-
-    elif minDistance >= stopDistance:
+    if minDistance >= stopDistance:
         waited = False
-        print("Im here 2")
+        print("I will go forward")
         goStraight(0)
 
+    if minDistance < stopDistance:
+        
+        if waited:
+            print("I have waited and will start moving around object")
+            #Stop robot
+            stopMoving()
+
+            #Move right
+            turnRight()
+
+            #Go straight
+            goStraight(7)
+
+            #Turn Left
+            turnLeft()
+
+            #Go straight
+            goStraight(7)
+
+            #Turn left
+            turnLeft()
+
+            #Go Straight
+            goStraight(7)
+
+            #Turn Right
+            turnRight()
+
+            #Reset flag
+            waited = False
+            time.sleep(3)
+        else:
+            print("I will start waiting")
+            #Stop robot
+            stopMoving()
+
+            #Set flag
+            waited = True
+
+            #Set time
+            time.sleep(5)
+
     
-waited = 0
+waited = False
 
 #Initialize node 
 rospy.init_node('turtlebot3_waffle_pi_stop_and_go_around')
