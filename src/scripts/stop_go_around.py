@@ -42,6 +42,7 @@ def goaround(msg):
         right = distances[0:11]
         return min(left+right)
     
+
     global waited
 
     #Define stopping distance
@@ -86,7 +87,8 @@ def goaround(msg):
             #Reset flag
             waited = False
             time.sleep(3)
-        else:
+            
+        elif not waited:
             print("I will start waiting")
             #Stop robot
             stopMoving()
@@ -98,7 +100,7 @@ def goaround(msg):
             time.sleep(5)
 
     
-waited = False
+waited = None
 
 #Initialize node 
 rospy.init_node('turtlebot3_waffle_pi_stop_and_go_around')

@@ -2,6 +2,7 @@
 
 import rospy
 import time
+import decimal
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 
@@ -10,6 +11,10 @@ def goaround(msg):
     stopDistance = 1.2
 
     scanDistance = 2.0
+
+    movespeed = 0.5
+
+    #turning = False
     
 
     def turnRight():
@@ -26,7 +31,7 @@ def goaround(msg):
     
     def goStraight():
         move.angular.z = 0.0
-        move.linear.x = 0.2
+        move.linear.x = movespeed
         pub.publish(move)
         #time.sleep(timeToWait)
     
@@ -34,7 +39,18 @@ def goaround(msg):
         move.angular.z = 0.0
         move.linear.x = 0.0
         pub.publish(move)
+    
+    def float_range(start,stop,step):
+        while start < stop:
+            yield float(start)
+            start -= decimal.Decimal(step)
 
+    def slowDown():
+        for i in float_range(movespeed,0.0,0.1):
+            print(i)
+            move.linear.x = i
+            pub.publish(move)
+        
     def getDistances():
         return msg.ranges
     
@@ -170,11 +186,17 @@ def goaround(msg):
     #Get closest distance from center ranges
     center =  minCenterDistance()
 
+     
+
+
 
     if center < stopDistance and not waited:
         #print("Center is blocked and has not waited")
         #Stop robot
         #stopMoving()
+        slowDown()
+        stopMoving()
+        time.sleep(10)
 
         #Set flag
        # print("Waiting now true")
@@ -183,7 +205,7 @@ def goaround(msg):
      
 
         #Set time
-        time.sleep(0)
+        #time.sleep(20)
 
 
 
@@ -241,5 +263,7 @@ pub = rospy.Publisher('/cmd_vel',Twist,queue_size=10)
 
 #Initlaize subscriber, which reades in the LIDAR data from the turtlebot LIDAR
 sub = rospy.Subscriber('/scan',LaserScan, goaround)
+
+
 
 rospy.spin()
