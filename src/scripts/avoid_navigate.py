@@ -8,11 +8,13 @@ from sensor_msgs.msg import LaserScan
 
 def goaround(msg):
 
-    stopDistance = 1.2
+    stopDistance = 1.0
 
     scanDistance = 2.0
 
-    movespeed = 0.5
+    movespeed = 0.3
+
+    slowDownDistance = 1.5
 
     #turning = False
     
@@ -41,15 +43,14 @@ def goaround(msg):
         pub.publish(move)
     
     def float_range(start,stop,step):
-        while start < stop:
+        while start > stop:
             yield float(start)
-            start -= decimal.Decimal(step)
-
+            start -= step
     def slowDown():
-        for i in float_range(movespeed,0.0,0.1):
-            print(i)
+        for i in float_range(movespeed,0.05,0.0001):
             move.linear.x = i
             pub.publish(move)
+            #time.sleep(0.00000001)
         
     def getDistances():
         return msg.ranges
@@ -186,17 +187,16 @@ def goaround(msg):
     #Get closest distance from center ranges
     center =  minCenterDistance()
 
-     
-
-
+    if center < slowDownDistance:
+        slowDown()
 
     if center < stopDistance and not waited:
         #print("Center is blocked and has not waited")
         #Stop robot
         #stopMoving()
-        slowDown()
         stopMoving()
-        time.sleep(10)
+        
+        
 
         #Set flag
        # print("Waiting now true")
@@ -205,7 +205,7 @@ def goaround(msg):
      
 
         #Set time
-        #time.sleep(20)
+        time.sleep(10)
 
 
 
@@ -243,7 +243,7 @@ def goaround(msg):
             print("Going bottom left")
         
 
-    elif center >= stopDistance:
+    elif center > slowDownDistance:
         waited = False
         turning = False #reset turning
        # print("Center is not blocked, moving forward")
