@@ -10,9 +10,9 @@ from sensor_msgs.msg import LaserScan
 
 def goaround(msg):
 
-    stopDistance = 1.0
+    stopDistance = 1.2
 
-    scanDistance = 2.0
+    scanDistance = 5.0
 
     movespeed = 0.2
 
@@ -177,7 +177,7 @@ def goaround(msg):
 
 
     if center < stopDistance and not waited:
-        #print("Center is blocked and has not waited")
+        print("Center is blocked and has not waited")
         #Stop robot
         #stopMoving()
         stopMoving()
@@ -223,7 +223,7 @@ def goaround(msg):
             print("Going bottom left")
         
 
-    elif center > stopDistance:
+    if center > stopDistance:
         waited = False
         turning = False #reset turning
        # print("Center is not blocked, moving forward")
