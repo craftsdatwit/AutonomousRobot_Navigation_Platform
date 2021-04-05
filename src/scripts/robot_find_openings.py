@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
-import rospy
+#Purpose: This code allows a robot to move, stop, and when its center is detected blocked it is able to 
+#stop for 5 seconds then find an opening, turn to that opening and navigate through
+
+import rospy #ROS python lib
 import time
-import decimal
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 
@@ -13,11 +15,6 @@ def goaround(msg):
     scanDistance = 2.0
 
     movespeed = 0.2
-
-    slowDownDistance = 1.5
-
-    #turning = False
-    
 
     def turnRight():
         #Turn Right
@@ -42,15 +39,6 @@ def goaround(msg):
         move.linear.x = 0.0
         pub.publish(move)
     
-    def float_range(start,stop,step):
-        while start > stop:
-            yield float(start)
-            start -= step
-    def slowDown():
-        for i in float_range(movespeed,0.05,0.0001):
-            move.linear.x = i
-            pub.publish(move)
-            #time.sleep(0.00000001)
         
     def getDistances():
         return msg.ranges
@@ -187,8 +175,6 @@ def goaround(msg):
     #Get closest distance from center ranges
     center =  minCenterDistance()
 
-    if center < slowDownDistance:
-        slowDown()
 
     if center < stopDistance and not waited:
         #print("Center is blocked and has not waited")
@@ -196,18 +182,12 @@ def goaround(msg):
         #stopMoving()
         stopMoving()
         
-        
-
         #Set flag
-       # print("Waiting now true")
+        #print("Waiting now true")
         waited = True
 
-     
-
         #Set time
-        time.sleep(10)
-
-
+        time.sleep(5)
 
         #If the center is blocked
     if center < stopDistance and waited:
@@ -243,7 +223,7 @@ def goaround(msg):
             print("Going bottom left")
         
 
-    elif center > slowDownDistance:
+    elif center > stopDistance:
         waited = False
         turning = False #reset turning
        # print("Center is not blocked, moving forward")
