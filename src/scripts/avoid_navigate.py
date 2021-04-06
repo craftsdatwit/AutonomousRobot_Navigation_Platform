@@ -16,6 +16,8 @@ def goaround(msg):
 
     slowDownDistance = 1.5
 
+    currentspeed = 0.0
+
     #turning = False
     
 
@@ -37,11 +39,12 @@ def goaround(msg):
         pub.publish(move)
         #time.sleep(timeToWait)
     
-    def stopMoving():
+    def emergencyStop():
         move.angular.z = 0.0
         move.linear.x = 0.0
         pub.publish(move)
     
+  
     def float_range(start,stop,step):
         while start > stop:
             yield float(start)
@@ -49,6 +52,7 @@ def goaround(msg):
     def slowDown():
         for i in float_range(movespeed,0.05,0.0001):
             move.linear.x = i
+            currentspeed = i
             pub.publish(move)
             #time.sleep(0.00000001)
         
@@ -194,7 +198,7 @@ def goaround(msg):
         #print("Center is blocked and has not waited")
         #Stop robot
         #stopMoving()
-        stopMoving()
+        emergencyStop()
         
         
 
