@@ -205,7 +205,7 @@ def goaround(msg):
      
 
         #Set time
-        time.sleep(10)
+        time.sleep(5)
 
 
 
@@ -251,6 +251,7 @@ def goaround(msg):
 
     
 waited = 0
+turning =0
 
 #Initialize node 
 rospy.init_node('turtlebot3_waffle_pi_stop_and_go_around')
