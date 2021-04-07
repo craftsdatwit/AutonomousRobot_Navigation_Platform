@@ -7,6 +7,7 @@ import rospy
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 import time
+import decimal
 
 class RobotControl():
 
@@ -231,6 +232,19 @@ class RobotControl():
         self.cmd.angular.z = 0.0
         self.publish_once_in_cmd_vel()
 
+
+    def slow_down(self):
+        for i in float_Range(0.2,0.05,0.0001):
+            self.cmd.linear.x = i
+            currentspeed = i
+            self.vel_publisher.publish(self.cmd)
+            #time.sleep(0.00000001)
+
+    def float_Range(start,stop,step):
+        while start > stop:
+            yield float(start)
+            start -= step
+
     def move_straight(self):
 
         # Initilize velocities
@@ -277,14 +291,14 @@ class RobotControl():
     def turn_Until_Clear(self, direction, stopDistance):
 
         if direction == "left" and self.check_Center_Clear(stopDistance) == False:
-            self.cmd.angular.z = 0.2
             print("Turning left")
+            self.cmd.angular.z = 0.2
             self.vel_publisher.publish(self.cmd)
         
 
         if direction == "right" and self.check_Center_Clear(stopDistance) == False:
-            self.cmd.angular.z = -0.2
             print("Turning right")
+            self.cmd.angular.z = -0.2
             self.vel_publisher.publish(self.cmd)
         
         
