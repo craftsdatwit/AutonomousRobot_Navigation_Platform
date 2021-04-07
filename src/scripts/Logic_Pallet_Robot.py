@@ -28,9 +28,12 @@ rc.check_Bottom_Left_Clear(scanDistance)
 
 while rc._check_laser_ready() == True:
     
-    if rc.check_Center_Clear(stopDistance) == False:
-        print("Center is blocked")
+    #If center is blocked
+    while rc.check_Center_Clear(stopDistance) == False:
         rc.stop_robot()
+
+        if rc.check_Top_Right_Clear(stopDistance) == True:
+            rc.turn_Until_Clear("right", stopDistance)
     
     if rc.check_Center_Clear(stopDistance) == True:
         print("Center is clear")

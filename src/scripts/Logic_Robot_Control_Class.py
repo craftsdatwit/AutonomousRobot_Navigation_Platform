@@ -129,11 +129,11 @@ class RobotControl():
                 if success == 22: #if an opening has been found
                     break
             if success == 22: #if an opening is found
-                print("Top right opening found")
+                #print("Top right opening found")
                 success = 0
                 toprightfree = True
             else: #if no opening is found
-                print("No top right opening found")
+                #print("No top right opening found")
                 success = 0
                 toprightfree = False
         return toprightfree
@@ -157,11 +157,11 @@ class RobotControl():
                 if success == 22: 
                     break
             if success == 22: 
-                print("Bottom right opening found")
+                #print("Bottom right opening found")
                 success = 0
                 bottomrightfree = True
             else: 
-                print("No bottom right opening found")
+                #print("No bottom right opening found")
                 success = 0
                 bottomrightfree = False
             return bottomrightfree
@@ -185,11 +185,11 @@ class RobotControl():
                 if success == 22:
                     break
             if success == 22:
-                print("Top left opening found")
+                #print("Top left opening found")
                 success = 0
                 leftFree = True
             else:
-                print("No top left opening found")
+                #print("No top left opening found")
                 success = 0
                 leftFree = False
         return leftFree
@@ -213,11 +213,11 @@ class RobotControl():
                 if success == 22:
                     break
             if success == 22:
-                print("Bottom left opening found")
+                #print("Bottom left opening found")
                 success = 0
                 bottomleftFree = True
             else:
-                print("No bottom left opening found")
+                #print("No bottom left opening found")
                 success = 0
                 bottomleftFree = False
         return bottomleftFree
@@ -272,6 +272,22 @@ class RobotControl():
 
         s = "Moved robot " + motion + " for " + str(time) + " seconds"
         return s
+
+
+    def turn_Until_Clear(self, direction, stopDistance):
+
+        if direction == "left" and self.check_Center_Clear(stopDistance) == False:
+            self.cmd.angular.z = 0.2
+            self.vel_publisher.publish(self.cmd)
+        
+
+        if direction == "right" and self.check_Center_Clear(stopDistance) == False:
+            self.cmd.angular.z = -0.2
+            self.vel_publisher.publish(self.cmd)
+        
+        
+
+
 
 
     def turn(self, clockwise, speed, time):
