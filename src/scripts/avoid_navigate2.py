@@ -6,10 +6,17 @@ import decimal
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 
+    
+def minCenterDistance(msg):
+    distances = getDistances()
+    right = distances[349:359]
+    left = distances[0:10]
+    return min(right+left)
 
 
 
-def goaround(msg):
+
+def goaround():
 
     stopDistance = 1.067 #3.5ft
 
@@ -64,11 +71,6 @@ def goaround(msg):
     def getDistances():
         return msg.ranges
     
-    def minCenterDistance():
-        distances = getDistances()
-        right = distances[349:359]
-        left = distances[0:10]
-        return min(right+left)
 
     #Check if top right is clear
     def checkTopRight():
@@ -281,7 +283,7 @@ move = Twist()
 pub = rospy.Publisher('/cmd_vel',Twist,queue_size=10)
 
 #Initlaize subscriber, which reades in the LIDAR data from the turtlebot LIDAR
-sub = rospy.Subscriber('/scan',LaserScan, goaround)
+sub = rospy.Subscriber('/scan',LaserScan, minCenterDistance)
 
 
 
