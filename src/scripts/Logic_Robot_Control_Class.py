@@ -97,8 +97,8 @@ class RobotControl():
     #Checks if center is clear for a given distance
     def check_Center_Clear(self, distance): 
         ranges = self.laser_msg.ranges
-        right = ranges[349:359]
-        left = ranges[0:10]
+        right = ranges[345:359]
+        left = ranges[0:14]
 
         center = left+right
 
@@ -111,7 +111,7 @@ class RobotControl():
 
     #Check if top right is clear
     def check_Top_Right_Clear(self, scanDistance):
-        topright = self.laser_msg.ranges[270:438] #Get the right side range
+        topright = self.laser_msg.ranges[270:344] #Get the right side range
 
         maxr = max(topright) #Gets the max value of the right side range
         indexr = topright.index(maxr) #Gets the index of the maxr value
@@ -126,9 +126,9 @@ class RobotControl():
                     success +=1 #add one to I
                 else: #if in the scan there's an object 
                     break
-                if success == 22: #if an opening has been found
+                if success == 30: #if an opening has been found
                     break
-            if success == 22: #if an opening is found
+            if success == 30: #if an opening is found
                 #print("Top right opening found")
                 success = 0
                 toprightfree = True
@@ -154,9 +154,9 @@ class RobotControl():
                     success +=1 
                 else: 
                     break
-                if success == 22: 
+                if success == 30: 
                     break
-            if success == 22: 
+            if success == 30: 
                 #print("Bottom right opening found")
                 success = 0
                 bottomrightfree = True
@@ -168,7 +168,7 @@ class RobotControl():
 
     #Check if top left is clear
     def check_Top_Left_Clear(self, scanDistance):
-        left = self.laser_msg.ranges[12:90] 
+        left = self.laser_msg.ranges[15:90] 
 
         maxl = max(left)
         indexl = left.index(maxl)
@@ -182,9 +182,9 @@ class RobotControl():
                     success +=1
                 else:
                     break
-                if success == 22:
+                if success == 30:
                     break
-            if success == 22:
+            if success == 30:
                 #print("Top left opening found")
                 success = 0
                 leftFree = True
@@ -210,9 +210,9 @@ class RobotControl():
                     success +=1
                 else:
                     break
-                if success == 22:
+                if success == 30:
                     break
-            if success == 22:
+            if success == 30:
                 #print("Bottom left opening found")
                 success = 0
                 bottomleftFree = True
@@ -278,11 +278,13 @@ class RobotControl():
 
         if direction == "left" and self.check_Center_Clear(stopDistance) == False:
             self.cmd.angular.z = 0.2
+            print("Turning left")
             self.vel_publisher.publish(self.cmd)
         
 
         if direction == "right" and self.check_Center_Clear(stopDistance) == False:
             self.cmd.angular.z = -0.2
+            print("Turning right")
             self.vel_publisher.publish(self.cmd)
         
         
