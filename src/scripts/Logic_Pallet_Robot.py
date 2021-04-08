@@ -7,6 +7,7 @@ from Logic_Robot_Control_Class import RobotControl
 import rospy
 import time
 
+#stopDistance = 0.7
 stopDistance = 1.067 #3.5ft
 scanDistance = 2.0
 movespeed = 0.2
@@ -33,9 +34,13 @@ turning = False
 #While the laser scanner is recieving data
 while rc._check_laser_ready() == True:
     
+    if rc.check_Center_Clear(slowDownDistance) == False:
+        print("Slowing Down")
+        rc.slow_down()
+                
+
     #If center is blocked and the robot hasn't waited  --> stop robot, wait 5 seconds, set waited to true
     if rc.check_Center_Clear(stopDistance) == False and waited == False:
-        #rc.slow_down()
         rc.stop_robot()
         time.sleep(5)
         waited = True
@@ -62,7 +67,7 @@ while rc._check_laser_ready() == True:
         rc.turn_Until_Clear("left", stopDistance)
 
     #if center is clear for given distance --> reset booleans, move robot straight
-    if rc.check_Center_Clear(stopDistance) == True:
+    if rc.check_Center_Clear(slowDownDistance) == True and rc.check_Center_Clear(stopDistance) == True:
         print("Center is clear")
         waited = False
         turning = False

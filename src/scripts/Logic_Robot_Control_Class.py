@@ -234,13 +234,15 @@ class RobotControl():
 
 
     def slow_down(self):
-        for i in float_Range(0.2,0.05,0.0001):
+        for i in self.float_Range(0.2,0.05,0.00001):
             self.cmd.linear.x = i
+            if i < 0.05:
+                self.cmd.linear.x = 0.05
             currentspeed = i
             self.vel_publisher.publish(self.cmd)
             #time.sleep(0.00000001)
 
-    def float_Range(start,stop,step):
+    def float_Range(self,start,stop,step):
         while start > stop:
             yield float(start)
             start -= step
