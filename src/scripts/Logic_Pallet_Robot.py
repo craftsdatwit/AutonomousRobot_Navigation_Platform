@@ -30,18 +30,23 @@ rc.check_Bottom_Left_Clear(scanDistance)
 #Initalize booleans
 waited = False
 turning = False
+slowdown = False
 
 #While the laser scanner is recieving data
 while rc._check_laser_ready() == True:
     
-    if rc.check_Center_Clear(slowDownDistance) == False:
+    if rc.check_Center_Clear(slowDownDistance) == False and slowdown == False:
         print("Slowing Down")
         rc.slow_down()
+        waited = False
+        slowdown = True
+        #turning = False
                 
 
     #If center is blocked and the robot hasn't waited  --> stop robot, wait 5 seconds, set waited to true
-    if rc.check_Center_Clear(stopDistance) == False and waited == False:
+    if rc.check_Center_Clear(stopDistance) == False and waited == False and slowdown == True:
         rc.stop_robot()
+        print("Object Detected --> Waiting for 5 seconds")
         time.sleep(5)
         waited = True
 
@@ -52,24 +57,25 @@ while rc._check_laser_ready() == True:
         rc.turn_Until_Clear("right", scanDistance)
 
     if rc.check_Top_Left_Clear(stopDistance) == True and rc.check_Top_Right_Clear(stopDistance) == False and waited == True and turning == False:
-        print("Top Left is clear --> Navigating to top right")
+        print("Top Left is clear --> Navigating to top left")
         turning = True
         rc.turn_Until_Clear("left", scanDistance)
     
     if rc.check_Bottom_Right_Clear(stopDistance) == True and rc.check_Top_Left_Clear(stopDistance) == False and rc.check_Top_Right_Clear(stopDistance) == False and waited == True and turning == False:
-        print("Bottom Right is clear --> Navigating to top right")
+        print("Bottom Right is clear --> Navigating to bottom right")
         turning = True
         rc.turn_Until_Clear("right", stopDistance)
 
     if rc.check_Bottom_Left_Clear(stopDistance) == True and rc.check_Bottom_Right_Clear(stopDistance) == False and rc.check_Top_Left_Clear(stopDistance) == False and rc.check_Top_Right_Clear(stopDistance) == False and waited == True and turning == False:
-        print("Bottom Left is clear --> Navigating to top right")
+        print("Bottom Left is clear --> Navigating to bottom left")
         turning = True
         rc.turn_Until_Clear("left", stopDistance)
 
     #if center is clear for given distance --> reset booleans, move robot straight
-    if rc.check_Center_Clear(slowDownDistance) == True and rc.check_Center_Clear(stopDistance) == True:
-        print("Center is clear")
+    elif rc.check_Center_Clear(slowDownDistance) == True and rc.check_Center_Clear(stopDistance) == True:
+        print("Center is clear --> Moving Forward")
         waited = False
         turning = False
+        slowdown = False
         rc.move_straight()
 
