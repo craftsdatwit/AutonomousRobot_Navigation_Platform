@@ -33,11 +33,12 @@ turning = False
 slowdown = False
 
 #While the laser scanner is recieving data
-while rc._check_laser_ready() == True:
+while rc.check_Laser_Ready() == True:
     
     if rc.check_Center_Clear(slowDownDistance) == False and slowdown == False:
         print("Slowing Down")
-        rc.slow_down()
+        rc.slow_Down()
+        time.sleep(0.5)
         waited = False
         slowdown = True
         #turning = False
@@ -45,9 +46,9 @@ while rc._check_laser_ready() == True:
 
     #If center is blocked and the robot hasn't waited  --> stop robot, wait 5 seconds, set waited to true
     if rc.check_Center_Clear(stopDistance) == False and waited == False and slowdown == True:
-        rc.stop_robot()
+        rc.stop_Robot()
         print("Object Detected --> Waiting for 5 seconds")
-        time.sleep(5)
+        time.sleep(0)
         waited = True
 
     #If top right is clear and the robot has waited and the robot is not turning --> turning is true, turn robot to the right and check center clear with stopDistance
@@ -77,5 +78,5 @@ while rc._check_laser_ready() == True:
         waited = False
         turning = False
         slowdown = False
-        rc.move_straight()
+        rc.move_Straight(movespeed)
 

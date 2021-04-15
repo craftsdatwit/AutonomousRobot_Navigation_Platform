@@ -22,8 +22,6 @@ class RobotControl():
         #Topic variable for cmd velocity
         cmd_vel_topic='/cmd_vel' 
 
-        #self._check_laser_ready()
-
         # We start the publisher for cmd velocity
         self.vel_publisher = rospy.Publisher(cmd_vel_topic, Twist, queue_size=1)
 
@@ -31,11 +29,11 @@ class RobotControl():
         self.cmd = Twist() #Initalize a new object of type Twist
 
         #Create a subscriber that subscribes to the /scan topic
-        self.laser_subscriber = rospy.Subscriber('/scan', LaserScan, self.laser_callback) 
+        self.laser_subscriber = rospy.Subscriber('/scan', LaserScan, self.laser_Callback) 
       
 
         #Check that LiDar Sensor is ready
-        self._check_laser_ready()
+        self.check_Laser_Ready()
 
         self.ctrl_c = False
 
@@ -44,7 +42,7 @@ class RobotControl():
         rospy.on_shutdown(self.shutdownhook)
     
     #Checks that sensor is ready
-    def _check_laser_ready(self):
+    def check_Laser_Ready(self):
         self.laser_msg = None
         rospy.loginfo("Checking Laser...")
         while self.laser_msg is None and not rospy.is_shutdown():
@@ -81,25 +79,25 @@ class RobotControl():
 
     # /// LASER FUNCTIONS \\\
 
-    def laser_callback(self, msg):
+    def laser_Callback(self, msg):
         self.laser_msg = msg
 
 
     #Gets laser at a given position
-    def get_laser(self, pos):
+    def get_Laser(self, pos):
         time.sleep(1)
         return self.laser_msg.ranges[pos]
 
     #Returns entire laser array
-    def get_laser_full(self):
+    def get_Laser_Full(self):
         time.sleep(0)
         return self.laser_msg.ranges
 
     #Checks if center is clear for a given distance
     def check_Center_Clear(self, distance): 
         ranges = self.laser_msg.ranges
-        right = ranges[345:359]
-        left = ranges[0:14]
+        right = ranges[346:359]
+        left = ranges[0:13]
 
         center = left+right
 
@@ -127,9 +125,9 @@ class RobotControl():
                     success +=1 #add one to I
                 else: #if in the scan there's an object 
                     break
-                if success == 30: #if an opening has been found
+                if success == 28: #if an opening has been found
                     break
-            if success == 30: #if an opening is found
+            if success == 28: #if an opening is found
                 #print("Top right opening found")
                 success = 0
                 toprightfree = True
@@ -155,9 +153,9 @@ class RobotControl():
                     success +=1 
                 else: 
                     break
-                if success == 30: 
+                if success == 28: 
                     break
-            if success == 30: 
+            if success == 28: 
                 #print("Bottom right opening found")
                 success = 0
                 bottomrightfree = True
@@ -183,9 +181,9 @@ class RobotControl():
                     success +=1
                 else:
                     break
-                if success == 30:
+                if success == 28:
                     break
-            if success == 30:
+            if success == 28:
                 #print("Top left opening found")
                 success = 0
                 leftFree = True
@@ -211,9 +209,9 @@ class RobotControl():
                     success +=1
                 else:
                     break
-                if success == 30:
+                if success == 28:
                     break
-            if success == 30:
+            if success == 28:
                 #print("Bottom left opening found")
                 success = 0
                 bottomleftFree = True
@@ -226,14 +224,14 @@ class RobotControl():
 
      # /// MOVEMENT FUNCTIONS \\\
 
-    def stop_robot(self):
+    def stop_Robot(self):
         #rospy.loginfo("shutdown time! Stop the robot")
         self.cmd.linear.x = 0.0
         self.cmd.angular.z = 0.0
         self.publish_once_in_cmd_vel()
 
 
-    def slow_down(self):
+    def slow_Down(self):
         for i in self.float_Range(0.2,0.05,0.00001):
             self.cmd.linear.x = i
             if i < 0.05:
@@ -247,10 +245,10 @@ class RobotControl():
             yield float(start)
             start -= step
 
-    def move_straight(self):
+    def move_Straight(self, moveSpeed):
 
         # Initilize velocities
-        self.cmd.linear.x = 0.2
+        self.cmd.linear.x = moveSpeed
         self.cmd.linear.y = 0
         self.cmd.linear.z = 0
         self.cmd.angular.x = 0
@@ -260,7 +258,7 @@ class RobotControl():
         # Publish the velocity
         self.publish_once_in_cmd_vel()
 
-    def move_straight_time(self, motion, speed, time):
+    def move_Straight_Time(self, motion, speed, time):
 
         # Initilize velocities
         self.cmd.linear.y = 0
