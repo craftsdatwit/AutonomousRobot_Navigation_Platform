@@ -32,12 +32,12 @@ class RobotControl():
         self.laser_subscriber = rospy.Subscriber('/scan', LaserScan, self.laser_Callback) 
       
 
-        #Check that LiDar Sensor is ready
+        #Check that LiDAR Sensor is ready
         self.check_Laser_Ready()
 
         self.ctrl_c = False
 
-        self.rate = rospy.Rate(1)
+        self.rate = rospy.Rate(20)
 
         rospy.on_shutdown(self.shutdownhook)
     
@@ -50,7 +50,7 @@ class RobotControl():
                 self.laser_msg = rospy.wait_for_message("/scan", LaserScan, timeout=1.0)
                 rospy.logdebug("Current /scan READY=>" + str(self.laser_msg))
                 rospy.loginfo("Checking Laser...READY")
-                time.sleep(1)
+                time.sleep(0)
 
             except:
                 rospy.logerr("Current /scan not ready yet, retrying for getting scan")
@@ -107,6 +107,16 @@ class RobotControl():
         #Returns true if no object is detected
         if min(center) > distance:
             return True
+    
+    def return_Center_Blocked_Distance(self):
+        ranges = self.laser_msg.ranges
+        right = ranges[346:359]
+        left = ranges[0:13]
+
+        center = left+right
+
+        return min(center)
+
 
     #Check if top right is clear
     def check_Top_Right_Clear(self, scanDistance):

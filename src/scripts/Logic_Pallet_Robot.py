@@ -7,11 +7,10 @@ from Logic_Robot_Control_Class import RobotControl
 import rospy
 import time
 
-#stopDistance = 0.7
 stopDistance = 1.067 #3.5ft
-scanDistance = 2.0
+scanDistance = 1.3
 movespeed = 0.2
-slowDownDistance = 1.2 #5ft
+slowDownDistance = 1.524 #5ft
 currentspeed = 0.0
 
 
@@ -32,42 +31,48 @@ waited = False
 turning = False
 slowdown = False
 
+
 #While the laser scanner is recieving data
 while rc.check_Laser_Ready() == True:
+
+    if rc.check_Center_Clear(stopDistance) == False and slowdown ==  False and waited == False and turning == False:
+        print("*EMERGENCY STOP* Object Detected at Distance: ")
+        print(rc.return_Center_Blocked_Distance())
+        rc.stop_Robot()
     
-    if rc.check_Center_Clear(slowDownDistance) == False and slowdown == False:
-        print("Slowing Down")
+    if rc.check_Center_Clear(slowDownDistance) == False and slowdown == False and turning == False:
+        print("Object Detected within slow down distance --> Slowing Down")
         rc.slow_Down()
-        time.sleep(0.5)
+        time.sleep(0.2)
         waited = False
         slowdown = True
         #turning = False
                 
 
     #If center is blocked and the robot hasn't waited  --> stop robot, wait 5 seconds, set waited to true
-    if rc.check_Center_Clear(stopDistance) == False and waited == False and slowdown == True:
+    if rc.check_Center_Clear(scanDistance) == False and waited == False and slowdown == True and turning == False:
         rc.stop_Robot()
-        print("Object Detected --> Waiting for 5 seconds")
-        time.sleep(0)
+        print("Object Detected within stopping distance --> Waiting for 5 seconds")
+        time.sleep(5)
         waited = True
 
     #If top right is clear and the robot has waited and the robot is not turning --> turning is true, turn robot to the right and check center clear with stopDistance
-    if rc.check_Top_Right_Clear(stopDistance) == True and waited == True and turning == False:
+    if rc.check_Top_Right_Clear(scanDistance) == True and waited == True and turning == False:
         print("Top Right is clear --> Navigating to top right")
         turning = True
         rc.turn_Until_Clear("right", scanDistance)
 
-    if rc.check_Top_Left_Clear(stopDistance) == True and rc.check_Top_Right_Clear(stopDistance) == False and waited == True and turning == False:
+    if rc.check_Top_Left_Clear(scanDistance) == True and rc.check_Top_Right_Clear(scanDistance) == False and waited == True and turning == False:
         print("Top Left is clear --> Navigating to top left")
         turning = True
         rc.turn_Until_Clear("left", scanDistance)
     
-    if rc.check_Bottom_Right_Clear(stopDistance) == True and rc.check_Top_Left_Clear(stopDistance) == False and rc.check_Top_Right_Clear(stopDistance) == False and waited == True and turning == False:
+    if rc.check_Bottom_Right_Clear(scanDistance) == True and rc.check_Top_Left_Clear(scanDistance) == False and rc.check_Top_Right_Clear(scanDistance) == False and waited == True and turning == False:
         print("Bottom Right is clear --> Navigating to bottom right")
         turning = True
         rc.turn_Until_Clear("right", stopDistance)
 
-    if rc.check_Bottom_Left_Clear(stopDistance) == True and rc.check_Bottom_Right_Clear(stopDistance) == False and rc.check_Top_Left_Clear(stopDistance) == False and rc.check_Top_Right_Clear(stopDistance) == False and waited == True and turning == False:
+    if rc.check_Bottom_Left_Clear(scanDistance) == True and rc.check_Bottom_Right_Clear(scanDistance) == False and rc.check_Top_Left_Clear(scanDistance) == False and rc.check_Top_Right_Clear(scanDistance) == False and waited == True and turning == False:
         print("Bottom Left is clear --> Navigating to bottom left")
         turning = True
         rc.turn_Until_Clear("left", stopDistance)
