@@ -11,7 +11,9 @@ Using ROS and Gazebo, this project enables a robot to navigate a warehouse envir
 
 3.) Path Following
 
-## Installation
+## Getting Started
+
+### Installation
 
 1.) Install Ubuntu 20.04 LTS (or later) on a virtual machine or stand alone machine (https://www.virtualbox.org/).
 
@@ -30,8 +32,24 @@ sudo apt install ros-noetic-desktop-full #Full installation of ROS Noetic / Gaze
 
 5.) Upon creation of your ~/catkin_ws folder, navigate to this website: https://automaticaddison.com/how-to-launch-the-turtlebot3-simulation-with-ros/ and follow the steps to clone the turtlebot3 repo into your ~/catkin_ws folder. *Note: Follow the instructions for the Waffle Pi Turtlebot3 robot.
 
-## Usage
+### Running the Simulation
 
+```python
+import foobar
+
+foobar.pluralize('word') # returns 'words'
+foobar.pluralize('goose') # returns 'geese'
+foobar.singularize('phenomena') # returns 'phenomenon'
+```
+
+## Demo Video
+
+## Contributors
+
+- David Crafts (craftsd@wit.edu), Team Lead / Collision Avoidance Developer
+- Jake Sousa (sousaj8@wit.edu), Collision Avoidance Developer
+- Nathan Robson
+- William
 ```python
 import foobar
 
