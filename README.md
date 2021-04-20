@@ -34,12 +34,13 @@ sudo apt install ros-noetic-desktop-full #Full installation of ROS Noetic / Gaze
 
 ### Running the Simulation
 
-```python
-import foobar
+```bash
+~/catkin_ws 
 
-foobar.pluralize('word') # returns 'words'
-foobar.pluralize('goose') # returns 'geese'
-foobar.singularize('phenomena') # returns 'phenomenon'
+source devel/setup.bash
+
+rosrun turtlebot3
+
 ```
 
 ## Demo Video
