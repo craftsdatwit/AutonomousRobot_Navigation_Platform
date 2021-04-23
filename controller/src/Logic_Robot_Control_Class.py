@@ -37,7 +37,7 @@ class RobotControl():
 
         self.ctrl_c = False
 
-        self.rate = rospy.Rate(20)
+        self.rate = rospy.Rate(10)
 
         rospy.on_shutdown(self.shutdownhook)
     
@@ -312,9 +312,20 @@ class RobotControl():
             self.vel_publisher.publish(self.cmd)
         
         
+    def turn_Direction(self, direction, turnSpeed):
+        
+         if direction == "left":
+            print("Turning left")
+            self.cmd.linear.x = 0
+            self.cmd.angular.z = turnSpeed
+            self.vel_publisher.publish(self.cmd)
+        
 
-
-
+         if direction == "right":
+            print("Turning right")
+            self.cmd.linear.x = 0
+            self.cmd.angular.z = -turnSpeed
+            self.vel_publisher.publish(self.cmd)
 
     def turn(self, clockwise, speed, time):
 
