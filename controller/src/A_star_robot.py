@@ -18,7 +18,7 @@ PI=3.14151926535897
 x = 0.0
 y = 0.0
 theta = 0.0
-stopDistance = 1.067 #3.5ft
+stopDistance = 0.5 
 scanDistance = 1.3
 movespeed = 0.2
 slowDownDistance = 1.524 #5ft
@@ -162,6 +162,9 @@ def add_to_open(open, neighbor):
     return True
 # The main entry point for this module
 def main():
+    rc.check_Laser_Ready()
+    turning = False
+    center_Clear = True
     # Get a map (grid)
     map = {}
     chars = ['c']
@@ -170,7 +173,7 @@ def main():
     width = 0
     height = 0
     # Open a file
-    fp = open('/home/devuser/catkin_ws/src/Pallet_Project/controller/src/warehouse_test.txt', 'r')
+    fp = open('/home/devuser/catkin_ws/src/Pallet_Project/controller/src/warehouse.txt', 'r')
     
     # Loop until there is no more lines
     while len(chars) > 0:
@@ -231,20 +234,44 @@ def main():
         angle_to_goal = atan2 (inc_y, inc_x)
         distance_to_goal = numpy.sqrt(inc_x*inc_x + inc_y*inc_y)
 
+        calc_angle = angle_to_goal - theta
 
-        if distance_to_goal >= 0.3:
-                
-            if abs(angle_to_goal - theta) > 0.3:
+        if distance_to_goal >= 0.5:
+            if calc_angle > 5:
+                calc_angle = calc_angle - (2*PI)
+            if calc_angle < -5:
+                calc_angle = calc_angle + (2*PI)
+            if calc_angle > 0.2 and turning == False and center_Clear == True:
                 speed.linear.x = 0.0
-                speed.angular.z = 0.2
-            else:
-                speed.linear.x = 0.3
-                speed.angular.z = 0.0
+                turning = True
+                speed.angular.z = 0.1
+                #print(theta)
+                print('I am turning left ' + str(calc_angle))
+            if calc_angle < -0.2 and turning == False and center_Clear == True:
+                speed.linear.x = 0.0
+                turning = True
+                speed.angular.z = -0.1
+                print("I am turning right " + str(calc_angle))
+                #print(theta)
+            if calc_angle > -0.2 and calc_angle < 0.2 :
+                if rc.check_Center_Clear(stopDistance) == False:
+                    #rc.stop_Robot()
+                    speed.linear.x = 0.0
+                    speed.angular.z = 0.0
+                    center_Clear = False
+                    print('Object Detected')
+                if rc.check_Center_Clear(stopDistance) ==True:
+                    print("Center is clear")
+                    center_Clear = True
+                    turning = False
+                    speed.linear.x = 0.15
+                    speed.angular.z = 0.0
+                    print("I am moving straight " + str(calc_angle))
+                
             pub.publish(speed)
         else:
+            rc.slow_Down()
             point_index += 1
-        #print(goal.x)
-        #print(goal.y)
         r.sleep()
 
     rc.stop_Robot()
