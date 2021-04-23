@@ -316,12 +316,14 @@ class RobotControl():
         
         if direction == "left":
             print("Turning left")
+            self.cmd.linear.x = 0
             self.cmd.angular.z = turnSpeed
             self.vel_publisher.publish(self.cmd)
         
 
         if direction == "right":
             print("Turning right")
+            self.cmd.linear.x = 0
             self.cmd.angular.z = -turnSpeed
             self.vel_publisher.publish(self.cmd)
         
