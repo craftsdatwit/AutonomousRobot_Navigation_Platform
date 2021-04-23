@@ -1,17 +1,40 @@
 #!/usr/bin/env python3
+#Code adapted from Ryan Collingwood (gist.github.com/ryancollingwood/32446307e976a11a1185a5394d6657bc)
+#Modified by William McLellan
+
 
 import rospy
 import heapq
 import numpy
 
+from Logic_Robot_Control_Class import RobotControl
 from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion
 from geometry_msgs.msg import Point, Twist
 from math import atan2
 
+PI=3.14151926535897
+
 x = 0.0
 y = 0.0
 theta = 0.0
+stopDistance = 1.067 #3.5ft
+scanDistance = 1.3
+movespeed = 0.2
+slowDownDistance = 1.524 #5ft
+currentspeed = 0.0
+
+rc = RobotControl()
+
+rc.check_Top_Right_Clear(scanDistance)
+rc.check_Bottom_Right_Clear(scanDistance)
+rc.check_Top_Left_Clear(scanDistance)
+rc.check_Bottom_Left_Clear(scanDistance)
+
+#Initalize booleans
+waited = False
+turning = False
+slowdown = False
 
 def newOdom (msg):
 	global x
@@ -24,7 +47,7 @@ def newOdom (msg):
 	rot_q = msg.pose.pose.orientation
 	(roll, pitch, theta) = euler_from_quaternion ([rot_q.x, rot_q.y, rot_q.z, rot_q.w])
 
-rospy.init_node ("speed_controller")
+#rospy.init_node ("speed_controller")
 
 sub = rospy.Subscriber("/odom", Odometry, newOdom)
 pub = rospy.Publisher("/cmd_vel",Twist, queue_size=1)
@@ -147,7 +170,7 @@ def main():
     width = 0
     height = 0
     # Open a file
-    fp = open('/home/devuser/catkin_ws/src/Pallet_Project/controller/src/warehouse.txt', 'r')
+    fp = open('/home/devuser/catkin_ws/src/Pallet_Project/controller/src/warehouse_test.txt', 'r')
     
     # Loop until there is no more lines
     while len(chars) > 0:
@@ -181,14 +204,14 @@ def main():
     #path.reverse()
     #print(path)
     
-    ite = 0
+    ite = 0 #iteration
     while ite < len(path):
         tempx=path[ite][0]
         tempx = tempx - 10
         tempy=path[ite][1]
         tempy = tempy - 10
         
-        path[ite]= (tempx, -tempy)
+        path[ite]= (tempx, -tempy) #-y becuase it runs the opposite way then expected
         ite += 1
         
     print(path)
@@ -207,22 +230,24 @@ def main():
         
         angle_to_goal = atan2 (inc_y, inc_x)
         distance_to_goal = numpy.sqrt(inc_x*inc_x + inc_y*inc_y)
-       
-        if distance_to_goal >= 0.5:
-            if abs(angle_to_goal - theta) > 0.2:
+
+
+        if distance_to_goal >= 0.3:
+                
+            if abs(angle_to_goal - theta) > 0.3:
                 speed.linear.x = 0.0
                 speed.angular.z = 0.2
             else:
                 speed.linear.x = 0.3
                 speed.angular.z = 0.0
-            
-            
             pub.publish(speed)
         else:
             point_index += 1
-        print(goal.x)
-        print(goal.y)
+        #print(goal.x)
+        #print(goal.y)
         r.sleep()
+
+    rc.stop_Robot()
     
 # Tell python to run main method
 if __name__ == "__main__": main()
