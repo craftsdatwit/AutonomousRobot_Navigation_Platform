@@ -44,6 +44,21 @@ source devel/setup.bash
 rosrun turtlebot3
 
 ```
+### Running the Navigation Code
+
+1.) To run the navigation code, you need to have the Logic_Robot_Control_Class.py, the Logic_Pallet_Path_Following.py, and a text file, ours used is the warehouse.txt.
+
+2.) The first step is to create a grid layout of the enviroinment where you are running the code. Gazebo has a 21x21 grid which this code utalizes. The map you make will need to have '1' symbols denoting walls and unreachable areas, and '0' symbols denoting accessible paths or open ground. warehouse.txt shows an example.
+
+3.) The map you make also needs two unique points. the starting location of your robot should be denoted as the '@' symbol, and must be an open space where the robot is when the script starts. THe end goal is denoted as the '$' symbol, and must also be placed on an open spot. the algorithm requires both of these symbols to calculate a path.
+
+4.) After settomg up your text file, edit the line 167 in Logic_Pallet_Path_Finding to match the name of your file instead of warehouse.txt. Following the above method of running the simulation, start the simulation with your robot in the environment you have mapped out.
+
+5.) Navigate to the Pallet_Project/controller/src/ file, and use the fillowing command to run the python file, and the robot will travel to the point denoted on your map by the '$' symbol:
+
+```bash
+python Logic_Robot_Path_Following.py
+```
 
 ## Demo Video
 
