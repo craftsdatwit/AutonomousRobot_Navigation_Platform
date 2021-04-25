@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 #Code adapted from TheConstructSim (theconstructsim.com)
 #Modified by David Crafts and Jake Sousa
+#Purpose: The purpose of this file is to create a robot control class that can be easily implemented
+#for any robotic movement or object detection/collision avoidance purposes. This class contains all of the 
+#functions necessary for full object detection / collision avoidance.
 
 
 import rospy
