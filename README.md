@@ -51,7 +51,7 @@ rosrun turtlebot3
 * **Release 1.0** 
     * Establish a system that enables robot to navigate from point A to B with a lightweight version of the collision avoidance algorithms. This will enable the robot to come to a complete stop and wait until detected object is removed before continuing to its destination. 
 * **Release 1.5**
-    * Upgrade from release 1.0 to a more robust version of the collision avoidance software. In this release the robot would be able to make its way around the object wihtout having the obstruction to be removed.
+    * Upgrade from release 1.0 to a more robust version of the path folllwing algorithm. In this release, the robot would integrate full collision avoidance with the ability to move around an object and recompute it's path to the desination in real time.
 * **Release 2.0**
     * This release would have the ability to add a second robot to the simulation.
 
