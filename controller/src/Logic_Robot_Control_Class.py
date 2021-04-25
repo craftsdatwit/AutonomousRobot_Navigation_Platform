@@ -107,7 +107,8 @@ class RobotControl():
         #Returns true if no object is detected
         if min(center) > distance:
             return True
-    
+       
+    #Returns the distance from robot to an object if the center is blocked
     def return_Center_Blocked_Distance(self):
         ranges = self.laser_msg.ranges
         right = ranges[346:359]
@@ -127,15 +128,15 @@ class RobotControl():
         success =0 #Success variable
         toprightfree = False
 
-        #If maxr is greater than the stop distance
+        #If maxr is greater than the scan distance
         if maxr > scanDistance:
             success +=1 
             for i in topright[indexr:]: #for i in the right index starting at the max index 
-                if i > scanDistance: #if i is greater than the stop distance
-                    success +=1 #add one to I
+                if i > scanDistance: #if i is greater than the scan distance
+                    success +=1 
                 else: #if in the scan there's an object 
                     break
-                if success == 28: #if an opening has been found
+                if success == 28: #if an opening has been found that's wide enough for the robot
                     break
             if success == 28: #if an opening is found
                 #print("Top right opening found")
@@ -143,7 +144,7 @@ class RobotControl():
                 toprightfree = True
             else: #if no opening is found
                 #print("No top right opening found")
-                success = 0
+                success = 0 #reset success variable
                 toprightfree = False
         return toprightfree
 
@@ -234,13 +235,14 @@ class RobotControl():
 
      # /// MOVEMENT FUNCTIONS \\\
 
+    #Stops the robot
     def stop_Robot(self):
         #rospy.loginfo("shutdown time! Stop the robot")
         self.cmd.linear.x = 0.0
         self.cmd.angular.z = 0.0
         self.publish_once_in_cmd_vel()
 
-
+    #Slows down the robot's movement rapidly
     def slow_Down(self):
         for i in self.float_Range(0.2,0.05,0.00001):
             self.cmd.linear.x = i
@@ -249,12 +251,14 @@ class RobotControl():
             currentspeed = i
             self.vel_publisher.publish(self.cmd)
             #time.sleep(0.00000001)
-
+            
+    #Helper function for slow_Down
     def float_Range(self,start,stop,step):
         while start > stop:
             yield float(start)
             start -= step
 
+    #Moves the robot straight
     def move_Straight(self, moveSpeed):
 
         # Initilize velocities
@@ -267,7 +271,8 @@ class RobotControl():
 
         # Publish the velocity
         self.publish_once_in_cmd_vel()
-
+        
+    #Moves robot straight for specific parameters *Not used, depreciated function*
     def move_Straight_Time(self, motion, speed, time):
 
         # Initilize velocities
@@ -297,7 +302,7 @@ class RobotControl():
         s = "Moved robot " + motion + " for " + str(time) + " seconds"
         return s
 
-
+    #Turns the robot in a specific direction until an opening is found
     def turn_Until_Clear(self, direction, stopDistance):
 
         if direction == "left" and self.check_Center_Clear(stopDistance) == False:
@@ -311,7 +316,7 @@ class RobotControl():
             self.cmd.angular.z = -0.2
             self.vel_publisher.publish(self.cmd)
         
-        
+    #Turns the robot either right or left with a given speed
     def turn_Direction(self, direction, turnSpeed):
         
          if direction == "left":
@@ -327,6 +332,7 @@ class RobotControl():
             self.cmd.angular.z = -turnSpeed
             self.vel_publisher.publish(self.cmd)
 
+    #Turn robot based on specific parameters *Not used, depreciated function*
     def turn(self, clockwise, speed, time):
 
         # Initilize velocities
