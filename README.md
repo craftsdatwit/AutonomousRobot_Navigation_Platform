@@ -47,6 +47,8 @@ rosrun turtlebot3
 
 ## Demo Video
 
+https://youtu.be/mic3iBC6ELM
+
 ## Road Map
 * **Release 1.0** 
     * Establish a system that enables robot to navigate from point A to B with a lightweight version of the collision avoidance algorithms. This will enable the robot to come to a complete stop and wait until detected object is removed before continuing to its destination. 
