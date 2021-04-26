@@ -54,6 +54,8 @@ python Logic_Robot_Path_Following.py
 
 https://youtu.be/mic3iBC6ELM
 
+The demo video highlights the path following with object detection algorithm and the full collision avoidance suite. The code for demo two is located within the collision avoidance branch, this is where the robot control class was developed but was migrated over for integration with the path following algorithm.
+
 ## Road Map
 * **Release 1.0** 
     * Establish a system that enables robot to navigate from point A to B with a lightweight version of the collision avoidance algorithms. This will enable the robot to come to a complete stop and wait until detected object is removed before continuing to its destination. 
