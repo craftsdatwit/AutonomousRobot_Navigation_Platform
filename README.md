@@ -30,9 +30,9 @@ sudo apt update
 
 sudo apt install ros-noetic-desktop-full #Full installation of ROS Noetic / Gazebo
 ```
-4.) Following the tutorial here: [ROS Tutorial](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) create a catkin_ws folder in your home directory.
+3.) Following the tutorial here: [ROS Tutorial](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) create a catkin_ws folder in your home directory.
 
-5.) Upon creation of your ~/catkin_ws folder, navigate to this website: [Automatic Addison](https://automaticaddison.com/how-to-launch-the-turtlebot3-simulation-with-ros/) and follow the steps to clone the turtlebot3 repo into your ~/catkin_ws folder. *Note: Follow the instructions for the Waffle Pi Turtlebot3 robot.
+4.) Upon creation of your ~/catkin_ws folder, navigate to this website: [Automatic Addison](https://automaticaddison.com/how-to-launch-the-turtlebot3-simulation-with-ros/) and follow the steps to clone the turtlebot3 repo into your ~/catkin_ws folder. *Note: Follow the instructions for the Waffle Pi Turtlebot3 robot.
 
 ### Running the Navigation Code
 
