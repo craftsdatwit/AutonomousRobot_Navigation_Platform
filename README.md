@@ -68,5 +68,5 @@ The demo video highlights the path following with object detection algorithm and
 
 - David Crafts (craftsd@wit.edu), Team Lead / Collision Avoidance Developer
 - Jake Sousa (sousaj8@wit.edu), Collision Avoidance Developer
-- Nathan Robson
+- Nathan Robson (robsonn@wit.edu), Autonomous Navigation Developer
 - William McLellan (mclellanw@wit.edu), Autonomous Navigation Developer
