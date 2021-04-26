@@ -34,6 +34,8 @@ sudo apt install ros-noetic-desktop-full #Full installation of ROS Noetic / Gaze
 
 4.) Upon creation of your ~/catkin_ws folder, navigate to this website: [Automatic Addison](https://automaticaddison.com/how-to-launch-the-turtlebot3-simulation-with-ros/) and follow the steps to clone the turtlebot3 repo into your ~/catkin_ws folder. *Note: Follow the instructions for the Waffle Pi Turtlebot3 robot.
 
+5.) To get the warehouse files installed, follow the readme withing the Warehouse Files folder
+
 ### Running the Navigation Code
 
 1.) To run the navigation code, you need to have the Logic_Robot_Control_Class.py, the Logic_Pallet_Path_Following.py, and a text file, ours used is the warehouse.txt.
