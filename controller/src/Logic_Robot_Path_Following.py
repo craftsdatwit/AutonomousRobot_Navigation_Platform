@@ -6,6 +6,7 @@
 import rospy
 import heapq
 import numpy
+import time
 
 from Logic_Robot_Control_Class import RobotControl
 from nav_msgs.msg import Odometry
@@ -27,6 +28,7 @@ currentspeed = 0.0
 speed = Twist()
 
 
+
 #set odometry data for robot position
 def newOdom (msg):
     global x
@@ -35,7 +37,7 @@ def newOdom (msg):
 
     x = msg.pose.pose.position.x
     y = msg.pose.pose.position.y
-
+    
     rot_q = msg.pose.pose.orientation
     (roll, pitch, theta) = euler_from_quaternion ([rot_q.x, rot_q.y, rot_q.z, rot_q.w])   
 
@@ -164,7 +166,7 @@ def main():
     # Open the warehouse grid with start and navigate too points
     #fp = open('/home/devuser/catkin_ws/src/Pallet_Project/controller/src/warehouse.txt', 'r')
     #secondary file for chnaging points without taking away base setup
-    fp = open('/home/devuser/catkin_ws/src/Pallet_Project/controller/src/warehouse_test.txt', 'r')
+    fp = open('/media/sf_Pallet_Project/controller/src/warehouse.txt', 'r')
     # Loop until there is no more lines
     while len(chars) > 0:
         # Get chars in a line
@@ -227,7 +229,13 @@ def main():
 
         #desired angle - robots acual angle
         calc_angle = angle_to_goal - theta
-
+        #Initalize booleans
+        waited = False
+        turning = False
+        slowdown = False
+        objectInPath = False
+        turnedLeft = False
+        turnedRight = False
         #if the robot is not a certian distance away from goal point
         if distance_to_goal >= 0.3:
             #Robot had issues at the extremes, +-2*Pi, this offsets number
@@ -248,16 +256,101 @@ def main():
                 print("I am turning right " + str(calc_angle))
             #Move forward
             if calc_angle > -0.2 and calc_angle < 0.2 :
-                if rc.check_Center_Clear(stopDistance) == False:
-                    rc.stop_Robot()
-                    center_Clear = False
-                    print('Object Detected')
+                
+                if rc.check_Center_Clear(slowDownDistance) == False:
+                    objectInPath = True
+
+                    while objectInPath == True:
+
+                        if rc.check_Center_Clear(stopDistance) == False and slowdown ==  False and waited == False and turning == False:
+                            print("*EMERGENCY STOP* Object Detected at Distance: ")
+                            print(rc.return_Center_Blocked_Distance())
+                            rc.stop_Robot()
+                        
+                        if rc.check_Center_Clear(slowDownDistance) == False and slowdown == False and turning == False:
+                            print("Object Detected within slow down distance --> Slowing Down")
+                            rc.slow_Down()
+                            time.sleep(0.2)
+                            waited = False
+                            slowdown = True
+                            #turning = False
+
+                        #If center is blocked and the robot hasn't waited  --> stop robot, wait 5 seconds, set waited to true
+                        if rc.check_Center_Clear(stopDistance) == False and waited == False and slowdown == True and turning == False:
+                            rc.stop_Robot()
+                            print("Object Detected within stopping distance --> Waiting for 5 seconds")
+                            time.sleep(0)
+                            waited = True
+
+                        #If top right is clear and the robot has waited and the robot is not turning --> turning is true, turn robot to the right and check center clear with stopDistance
+                        if rc.check_Top_Right_Clear(scanDistance) == True and waited == True and turning == False:
+                            print("Top Right is clear --> Navigating to top right")
+                            turnedRight = True
+                            turning = True
+                            rc.turn_Until_Clear("right", stopDistance)
+
+                        if rc.check_Top_Left_Clear(scanDistance) == True and rc.check_Top_Right_Clear(scanDistance) == False and waited == True and turning == False:
+                            print("Top Left is clear --> Navigating to top left")
+                            turnedLeft = True
+                            turning = True
+                            rc.turn_Until_Clear("left", stopDistance)
+                        
+                        if rc.check_Bottom_Right_Clear(scanDistance) == True and rc.check_Top_Left_Clear(scanDistance) == False and rc.check_Top_Right_Clear(scanDistance) == False and waited == True and turning == False:
+                            print("Bottom Right is clear --> Navigating to bottom right")
+                            turning = True
+                            rc.turn_Until_Clear("right", stopDistance)
+
+                        if rc.check_Bottom_Left_Clear(scanDistance) == True and rc.check_Bottom_Right_Clear(scanDistance) == False and rc.check_Top_Left_Clear(scanDistance) == False and rc.check_Top_Right_Clear(scanDistance) == False and waited == True and turning == False:
+                            print("Bottom Left is clear --> Navigating to bottom left")
+                            turning = True
+                            rc.turn_Until_Clear("left", stopDistance)
+                        
+                        elif rc.check_Center_Clear(slowDownDistance) == True and rc.check_Center_Clear(stopDistance) == True:
+                            print("Center is clear --> Moving Forward")
+
+                            waited = False
+                            turning = False
+                            slowdown = False
+                            rc.move_Straight(movespeed)
+                            if turnedRight == True:
+                                print("I TURNED RIGHT")
+                                if rc.check_Top_Left_Clear(stopDistance) == True:
+                                    sub = rospy.Subscriber("/odom", Odometry, newOdom) 
+                                   
+                                    newStart = (x,y)
+                                    objectInPath = False
+                                    path = astar_search(map, newStart, end)
+                                    rc.stop_Robot()
+                            if turnedLeft == True:
+                                print("I TURNED LEFT")
+
+                                while rc.check_Top_Right_Clear(scanDistance) == False:
+                                    rc.move_Straight(movespeed)
+
+                                while rc.check_Bottom_Right_Clear(scanDistance) == False:
+                                    rc.move_Straight(movespeed)
+                                
+
+                                print("***** CHECK CENTER RIGHT CLEAR *****")
+                                rc.stop_Robot()
+                                sub = rospy.Subscriber("/odom", Odometry, newOdom) 
+                                newStart = (x,y)
+                                objectInPath = False
+                                path = astar_search(map, newStart, end)
+                                
+                            else:
+                                rc.move_Straight(movespeed)
+                    
+                
                 if rc.check_Center_Clear(stopDistance) ==True:
                     print("Center is clear")
                     center_Clear = True
                     turning = False
+                    turnedLeft = False
+                    turnedRight = False
                     rc.move_Straight(0.15)
                     print("I am moving straight " + str(calc_angle))
+                
         #If at the next point
         else:
             rc.slow_Down()

@@ -32,8 +32,7 @@ class RobotControl():
         self.cmd = Twist() #Initalize a new object of type Twist
 
         #Create a subscriber that subscribes to the /scan topic
-        self.laser_subscriber = rospy.Subscriber('/scan', LaserScan, self.laser_Callback) 
-      
+        self.laser_subscriber = rospy.Subscriber('/scan', LaserScan, self.laser_Callback)
 
         #Check that LiDAR Sensor is ready
         self.check_Laser_Ready()
@@ -43,6 +42,7 @@ class RobotControl():
         self.rate = rospy.Rate(10)
 
         rospy.on_shutdown(self.shutdownhook)
+
     
     #Checks that sensor is ready
     def check_Laser_Ready(self):
@@ -178,6 +178,33 @@ class RobotControl():
                 success = 0
                 bottomrightfree = False
             return bottomrightfree
+
+    def check_Center_Right_Clear(self, scanDistance):
+        centerright = self.laser_msg.ranges[240:300]
+
+        maxr = max(centerright) 
+        indexr = centerright.index(maxr) 
+        success =0 
+        centerrightfree = False
+
+        if maxr > scanDistance:
+            success +=1 
+            for i in centerright[indexr:]: 
+                if i > scanDistance:
+                    success +=1 
+                else: 
+                    break
+                if success == 28: 
+                    break
+            if success == 28: 
+                #print("Bottom right opening found")
+                success = 0
+                bottomrightfree = True
+            else: 
+                #print("No bottom right opening found")
+                success = 0
+                centerrightfree = False
+            return centerrightfree
 
     #Check if top left is clear
     def check_Top_Left_Clear(self, scanDistance):
