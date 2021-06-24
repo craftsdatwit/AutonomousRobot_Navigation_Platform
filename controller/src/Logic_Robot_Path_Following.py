@@ -315,12 +315,12 @@ def main():
                             if turnedRight == True:
                                 print("I TURNED RIGHT")
                                 if rc.check_Top_Left_Clear(stopDistance) == True:
-                                    sub = rospy.Subscriber("/odom", Odometry, newOdom) 
+                                    #sub = rospy.Subscriber("/odom", Odometry, newOdom) 
                                    
-                                    newStart = (x,y)
+                                    #newStart = (x,y)
                                     objectInPath = False
-                                    path = astar_search(map, newStart, end)
-                                    rc.stop_Robot()
+                                    #path = astar_search(map, newStart, end)
+                                    #rc.stop_Robot()
                             if turnedLeft == True:
                                 print("I TURNED LEFT")
 
@@ -332,11 +332,11 @@ def main():
                                 
 
                                 print("***** CHECK CENTER RIGHT CLEAR *****")
-                                rc.stop_Robot()
-                                sub = rospy.Subscriber("/odom", Odometry, newOdom) 
-                                newStart = (x,y)
+                               # rc.stop_Robot()
+                                #sub = rospy.Subscriber("/odom", Odometry, newOdom) 
+                                #newStart = (x,y)
                                 objectInPath = False
-                                path = astar_search(map, newStart, end)
+                                #path = astar_search(map, newStart, end)
                                 
                             else:
                                 rc.move_Straight(movespeed)
