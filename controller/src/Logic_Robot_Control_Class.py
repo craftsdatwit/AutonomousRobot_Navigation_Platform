@@ -336,13 +336,13 @@ class RobotControl():
     def turn_Until_Clear(self, direction, stopDistance):
 
         if direction == "left" and self.check_Center_Clear(stopDistance) == False:
-            print("Turning left")
+            #print("Turning left")
             self.cmd.angular.z = 0.2
             self.vel_publisher.publish(self.cmd)
         
 
         if direction == "right" and self.check_Center_Clear(stopDistance) == False:
-            print("Turning right")
+            #print("Turning right")
             self.cmd.angular.z = -0.2
             self.vel_publisher.publish(self.cmd)
         
@@ -350,14 +350,14 @@ class RobotControl():
     def turn_Direction(self, direction, turnSpeed):
         
          if direction == "left":
-            print("Turning left")
+            #print("Turning left")
             self.cmd.linear.x = 0
             self.cmd.angular.z = turnSpeed
             self.vel_publisher.publish(self.cmd)
         
 
          if direction == "right":
-            print("Turning right")
+            #print("Turning right")
             self.cmd.linear.x = 0
             self.cmd.angular.z = -turnSpeed
             self.vel_publisher.publish(self.cmd)
