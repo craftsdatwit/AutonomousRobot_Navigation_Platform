@@ -24,6 +24,7 @@ goal = Point ()
 #variables for robot control
 stopDistance = 0.5 
 scanDistance = 1.3
+clearDistance = 1.6
 movespeed = 0.2
 slowDownDistance = 1.524 #5ft
 currentspeed = 0.0
@@ -238,7 +239,7 @@ def main():
         ite += 1
     #To see all points along the path in list form   
     print(path)
-    print("Original END GOAL: " + end)
+    #print("Original END GOAL: " + end)
     
     #Iterate through each point, and move to that point
     point_index = 0
@@ -347,10 +348,10 @@ def main():
                             if turnedRight == True:
                                 #print("I TURNED RIGHT")
                                 if rc.check_Top_Left_Clear(stopDistance) == True:
-                                    while rc.check_Top_Left_Clear(scanDistance) == False:
+                                    while rc.check_Top_Left_Clear(clearDistance) == False:
                                         rc.move_Straight(movespeed)
 
-                                    while rc.check_Bottom_Left_Clear(scanDistance) == False:
+                                    while rc.check_Bottom_Left_Clear(clearDistance) == False:
                                         rc.move_Straight(movespeed)
                                 
 
@@ -363,9 +364,19 @@ def main():
                                     print("Left NEW START: " + str(x) + str(y))
                             
                                     objectInPath = False
-                                    path = astar_search(map, newStart, end)
+                                    """
+                                        Below is where I go through and delete all of the old nodes in the list
+                                        There still needs to be a check that will make sure that our current local is not behind the first node in the list/
+                                    
+                                    """
+                                    print("OLD PATH: " + str(path))
+                                    for i in range(0,point_index+1):
+                                        path.pop(i)
+                                    #path = astar_search(map, newStart, end)
                                     print("Left I MADE IT 2")
-                                    point_index = 0
+                                    print("NEW PATH: " + str(path))
+                                    
+                                    point_index = 0 # Reset index to start back at top of the list
                             if turnedLeft == True:
                                 #print("I TURNED LEFT")
 
@@ -381,13 +392,23 @@ def main():
                                 newStart = None
                                 #print("OLD START: " + str(x) + str(y))
                                 print("I MADE IT") 
+                                print("OLD PATH: " + str(path))
                                 newStart = (floatX,floatY)
                                 print("NEW START: " + str(x) + str(y))
                         
                                 objectInPath = False
-                                path = astar_search(map, newStart, end)
-                                print("I MADE IT 2") 
-                                point_index = 0
+
+                                """
+                                        Below is where I go through and delete all of the old nodes in the list
+                                        There still needs to be a check that will make sure that our current local is not behind the first node in the list/
+                                    
+                                """
+                                for i in range(0,point_index+1):
+                                        path.pop(i)
+                                print("I MADE IT 2")
+                                print("NEW PATH: " + str(path))
+ 
+                                point_index = 0 # Reset index to start back at top of the list
 
                                 
                             else:
