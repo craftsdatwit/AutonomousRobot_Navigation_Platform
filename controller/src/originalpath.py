@@ -6,10 +6,8 @@
 import rospy
 import heapq
 import numpy
-import time
 
 from Logic_Robot_Control_Class import RobotControl
-from obstacle_avoidance import ObstacleAvoidance
 from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion
 from geometry_msgs.msg import Point, Twist
@@ -150,12 +148,10 @@ def add_to_open(open, neighbor):
 def main():
     #Call in RobotControl Class
     rc = RobotControl()
-    roa = ObstacleAvoidance()
     #set up lasers and booleons for robot control
     rc.check_Laser_Ready()
     turning = False
     center_Clear = True
-    obstacle = False
     
     # Get a map (grid)
     map = {}
@@ -216,8 +212,8 @@ def main():
     point_index = 0
     while not rospy.is_shutdown():
         if point_index < len(path):
-            goal.x = path[0][0]
-            goal.y = path[0][1]
+            goal.x = path[point_index][0]
+            goal.y = path[point_index][1]
             
         else:
             break
@@ -252,35 +248,20 @@ def main():
                 print("I am turning right " + str(calc_angle))
             #Move forward
             if calc_angle > -0.2 and calc_angle < 0.2 :
-                if rc.check_Center_Clear(slowDownDistance) == False:
-                    while obstacle != True:
-                        print("Avoiding Obstacle 1")
-                        obstacle = roa.avoid_obstacle()
-                        rc.move_Straight(0.15)
-                        time.sleep(4)
-                        print("Avoiding Obstacle 2")
-                        path.pop(0)
-                        print("AFTER OBSTACLE PATH: " + str(path))
-                        print("NEW COORDINATES: x: " + str(x) + " y: " + str(y))
-                
-
-                if rc.check_Center_Clear(slowDownDistance) ==True:
-                    #print("Center is clear")
+                if rc.check_Center_Clear(stopDistance) == False:
+                    rc.stop_Robot()
+                    center_Clear = False
+                    print('Object Detected')
+                if rc.check_Center_Clear(stopDistance) ==True:
+                    print("Center is clear")
                     center_Clear = True
                     turning = False
-                    obstacle = False
                     rc.move_Straight(0.15)
-                    #print("I am moving straight " + str(calc_angle))
-             
-                #print("Obstacle: " + str(obstacle))
-
+                    print("I am moving straight " + str(calc_angle))
         #If at the next point
         else:
-            print("SLOW DOWN ELSE")
             rc.slow_Down()
-            #point_index += 1
-            path.pop(0)
-            print("NEW PATH: " + str(path))
+            point_index += 1
     #When at final point, stop moving
     rc.stop_Robot()
     
