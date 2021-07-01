@@ -8,6 +8,7 @@
 
 import rospy
 from geometry_msgs.msg import Twist
+from rospy.client import TIMEOUT_READY
 from sensor_msgs.msg import LaserScan
 import time
 import decimal
@@ -52,7 +53,7 @@ class RobotControl():
             try:
                 self.laser_msg = rospy.wait_for_message("/scan", LaserScan, timeout=1.0)
                 rospy.logdebug("Current /scan READY=>" + str(self.laser_msg))
-                rospy.loginfo("Checking Laser...READY")
+                #rospy.loginfo("Checking Laser...READY")
                 time.sleep(0)
 
             except:
@@ -177,7 +178,35 @@ class RobotControl():
                 #print("No bottom right opening found")
                 success = 0
                 bottomrightfree = False
-            return bottomrightfree
+        return bottomrightfree
+
+        #Check Right Side is Clear
+    def check_Right_Side_Clear(self, scanDistance):
+        rightside = self.laser_msg.ranges[216:327]
+
+        maxr = max(rightside) 
+        indexr = rightside.index(maxr) 
+        success =0 
+        rightsideFree = False
+
+        if maxr > scanDistance:
+            success +=1 
+            for i in rightside[indexr:]: 
+                if i > scanDistance:
+                    success +=1 
+                else: 
+                    break
+                if success == 28: 
+                    break
+            if success == 28: 
+                print("Right Side Clear")
+                success = 0
+                rightsideFree = True
+            else: 
+                print("Right Side is Not Clear")
+                success = 0
+                rightsideFree = False
+        return rightsideFree
 
     def check_Center_Right_Clear(self, scanDistance):
         centerright = self.laser_msg.ranges[240:300]
@@ -204,7 +233,7 @@ class RobotControl():
                 #print("No bottom right opening found")
                 success = 0
                 centerrightfree = False
-            return centerrightfree
+        return centerrightfree
 
     #Check if top left is clear
     def check_Top_Left_Clear(self, scanDistance):
@@ -261,6 +290,34 @@ class RobotControl():
                 success = 0
                 bottomleftFree = False
         return bottomleftFree
+
+        #Check Left Side is Clear
+    def check_Left_Side_Clear(self, scanDistance):
+        leftside = self.laser_msg.ranges[33:145]
+        maxl = max(leftside)
+        indexl = leftside.index(maxl)
+        success = 0
+        leftsideFree = False
+
+        if maxl > scanDistance:
+            success +=1
+            for i in leftside[indexl:]:
+                if i > scanDistance:
+                    success +=1
+                else:
+                    break
+                if success == 28:
+                    break
+            if success == 28:
+                print("Left Side is clear")
+                success = 0
+                leftsideFree = True
+            else:
+                print("No opening for Left Side")
+                success = 0
+                leftsideFree = False
+        return leftsideFree
+
 
 
      # /// MOVEMENT FUNCTIONS \\\

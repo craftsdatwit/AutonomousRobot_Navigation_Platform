@@ -7,9 +7,9 @@ from Logic_Robot_Control_Class import RobotControl
 import rospy
 import time
 
-stopDistance = 1.067 #3.5ft
+stopDistance = 0.7 #3.5ft
 scanDistance = 1.3
-movespeed = 0.2
+movespeed = 0.15
 slowDownDistance = 1.524 #5ft
 currentspeed = 0.0
 
@@ -30,6 +30,8 @@ rc.check_Bottom_Left_Clear(scanDistance)
 waited = False
 turning = False
 slowdown = False
+turnedRight = False
+turnedLeft = False
 
 class ObstacleAvoidance():
 
@@ -43,6 +45,8 @@ class ObstacleAvoidance():
         global waited
         global turning
         global slowdown
+        global turnedLeft
+        global turnedRight
 
         while rc.check_Laser_Ready() == True:
 
@@ -71,13 +75,16 @@ class ObstacleAvoidance():
             if rc.check_Top_Right_Clear(scanDistance) == True and waited == True and turning == False:
                 print("Top Right is clear --> Navigating to top right")
                 turning = True
+                turnedRight = True
                 rc.turn_Until_Clear("right", stopDistance)
+           
 
             if rc.check_Top_Left_Clear(scanDistance) == True and rc.check_Top_Right_Clear(scanDistance) == False and waited == True and turning == False:
                 print("Top Left is clear --> Navigating to top left")
                 turning = True
+                turnedLeft = True
                 rc.turn_Until_Clear("left", stopDistance)
-            
+          
             if rc.check_Bottom_Right_Clear(scanDistance) == True and rc.check_Top_Left_Clear(scanDistance) == False and rc.check_Top_Right_Clear(scanDistance) == False and waited == True and turning == False:
                 print("Bottom Right is clear --> Navigating to bottom right")
                 turning = True
@@ -87,13 +94,25 @@ class ObstacleAvoidance():
                 print("Bottom Left is clear --> Navigating to bottom left")
                 turning = True
                 rc.turn_Until_Clear("left", stopDistance)
+            
+
 
             #if center is clear for given distance --> reset booleans, move robot straight
-            elif rc.check_Center_Clear(slowDownDistance) == True and rc.check_Center_Clear(stopDistance) == True:
+            elif rc.check_Center_Clear(stopDistance) == True and rc.check_Center_Clear(stopDistance) == True:
                 print("Center is clear --> Moving Forward")
                 waited = False
                 turning = False
                 slowdown = False
                 rc.move_Straight(movespeed)
 
+                while rc.check_Right_Side_Clear(stopDistance) == False and turnedLeft == True:
+                    print("Object Detected on Right Side Moving Straight")
+
+                while rc.check_Left_Side_Clear(stopDistance) == False and turnedRight == True:
+                    print("Object Detected on Left Side Moving Straight")
+
+                rc.stop_Robot()
+                #time.sleep(5)
+                turnedLeft = False
+                turnedRight = False
                 return True

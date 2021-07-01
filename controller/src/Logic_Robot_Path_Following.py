@@ -21,12 +21,16 @@ y = 0.0
 theta = 0.0
 goal = Point ()
 #variables for robot control
-stopDistance = 0.5 
+stopDistance = 0.7 
 scanDistance = 1.3
 movespeed = 0.2
 slowDownDistance = 1.524 #5ft
 currentspeed = 0.0
 speed = Twist()
+distance_to_goal = 0.0
+calc_angle = 0.0
+checkDistance = 1.0
+turnDistance = 0.3
 
 
 #set odometry data for robot position
@@ -145,6 +149,21 @@ def add_to_open(open, neighbor):
         if (neighbor == node and neighbor.f >= node.f):
             return False
     return True
+
+def angleMeasurements(path):
+    
+    goal.x = path[0][0]
+    goal.y = path[0][1]
+    #calculate distance and angle to goal    
+    inc_x = goal.x - x
+    inc_y = goal.y - y
+        
+    angle_to_goal = atan2 (inc_y, inc_x)
+    distance_to_goal = numpy.sqrt(inc_x*inc_x + inc_y*inc_y)
+
+    #desired angle - robots acual angle
+    calc_angle = angle_to_goal - theta
+    return (calc_angle,distance_to_goal)
     
 # The main entry point for this module
 def main():
@@ -156,6 +175,8 @@ def main():
     turning = False
     center_Clear = True
     obstacle = False
+    global distance_to_goal
+    global calc_angle
     
     # Get a map (grid)
     map = {}
@@ -216,21 +237,16 @@ def main():
     point_index = 0
     while not rospy.is_shutdown():
         if point_index < len(path):
-            goal.x = path[0][0]
-            goal.y = path[0][1]
+            measurements = angleMeasurements(path)
+            calc_angle = measurements[0]
+            distance_to_goal = measurements[1]
+
+
             
         else:
             break
         
-        #calculate distance and angle to goal    
-        inc_x = goal.x - x
-        inc_y = goal.y - y
         
-        angle_to_goal = atan2 (inc_y, inc_x)
-        distance_to_goal = numpy.sqrt(inc_x*inc_x + inc_y*inc_y)
-
-        #desired angle - robots acual angle
-        calc_angle = angle_to_goal - theta
 
         #if the robot is not a certian distance away from goal point
         if distance_to_goal >= 0.3:
@@ -243,32 +259,50 @@ def main():
             #Left turn
             if calc_angle > 0.2 and turning == False and center_Clear == True:
                 turning = True
+
+                #while rc.check_Left_Side_Clear(turnDistance) == False:
+                 #   print("Trying to turn but object in way, will move straight")
+                  #  rc.move_Straight(movespeed)
+
                 rc.turn_Direction("left", 0.1)
                 print('I am turning left ' + str(calc_angle))
             #Right turn
             if calc_angle < -0.2 and turning == False and center_Clear == True:
                 turning = True
+
+                #while rc.check_Right_Side_Clear(turnDistance) == False:
+                 #   print("Trying to turn but object in way, will move straight")
+                  #  rc.move_Straight(movespeed)
+
                 rc.turn_Direction("right", 0.1)
                 print("I am turning right " + str(calc_angle))
             #Move forward
             if calc_angle > -0.2 and calc_angle < 0.2 :
                 if rc.check_Center_Clear(slowDownDistance) == False:
-                    while obstacle != True:
+                    
+                    rc.slow_Down()
+                    
+                    if rc.check_Center_Clear(stopDistance) == False:
                         print("Avoiding Obstacle 1")
-                        obstacle = roa.avoid_obstacle()
-                        rc.move_Straight(0.15)
-                        time.sleep(4)
+                        roa.avoid_obstacle()
+                            
+                            
                         print("Avoiding Obstacle 2")
                         path.pop(0)
+                        path.pop(0)
+                        measurements = angleMeasurements(path)
+                        calc_angle = measurements[0]
+                        distance_to_goal = measurements[1]
+                        print("CALC ANGLE: "+ str(calc_angle) + "DISTANCE: "+ str(distance_to_goal))
                         print("AFTER OBSTACLE PATH: " + str(path))
                         print("NEW COORDINATES: x: " + str(x) + " y: " + str(y))
-                
+                        #rc.move_Straight(0.15)
+                        #continue
 
-                if rc.check_Center_Clear(slowDownDistance) ==True:
+                if rc.check_Center_Clear(stopDistance) ==True:
                     #print("Center is clear")
                     center_Clear = True
                     turning = False
-                    obstacle = False
                     rc.move_Straight(0.15)
                     #print("I am moving straight " + str(calc_angle))
              
