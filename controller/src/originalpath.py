@@ -6,10 +6,8 @@
 import rospy
 import heapq
 import numpy
-import time
 
 from Logic_Robot_Control_Class import RobotControl
-from obstacle_avoidance import ObstacleAvoidance
 from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion
 from geometry_msgs.msg import Point, Twist
@@ -21,16 +19,12 @@ y = 0.0
 theta = 0.0
 goal = Point ()
 #variables for robot control
-stopDistance = 0.7 
+stopDistance = 0.5 
 scanDistance = 1.3
 movespeed = 0.2
 slowDownDistance = 1.524 #5ft
 currentspeed = 0.0
 speed = Twist()
-distance_to_goal = 0.0
-calc_angle = 0.0
-checkDistance = 1.0
-turnDistance = 0.3
 
 
 #set odometry data for robot position
@@ -45,7 +39,6 @@ def newOdom (msg):
     rot_q = msg.pose.pose.orientation
     (roll, pitch, theta) = euler_from_quaternion ([rot_q.x, rot_q.y, rot_q.z, rot_q.w])   
 
-#Odometry Sensor Subscriber
 sub = rospy.Subscriber("/odom", Odometry, newOdom) 
 
 # This class represents a node
@@ -87,7 +80,7 @@ def draw_tile(map, position, kwargs):
     # Return a tile value
     return value 
     
-# A* search algorithm for path finiding
+# A* search
 def astar_search(map, start, end):
     
     # Create lists for open nodes and closed nodes
@@ -150,36 +143,15 @@ def add_to_open(open, neighbor):
         if (neighbor == node and neighbor.f >= node.f):
             return False
     return True
-
-
-#Calculates angle measurements
-def angleMeasurements(path):
-    
-    goal.x = path[0][0]
-    goal.y = path[0][1]
-    #calculate distance and angle to goal    
-    inc_x = goal.x - x
-    inc_y = goal.y - y
-        
-    angle_to_goal = atan2 (inc_y, inc_x)
-    distance_to_goal = numpy.sqrt(inc_x*inc_x + inc_y*inc_y)
-
-    #desired angle - robots acual angle
-    calc_angle = angle_to_goal - theta
-    return (calc_angle,distance_to_goal)
     
 # The main entry point for this module
 def main():
     #Call in RobotControl Class
     rc = RobotControl()
-    roa = ObstacleAvoidance()
     #set up lasers and booleons for robot control
     rc.check_Laser_Ready()
     turning = False
     center_Clear = True
-    obstacle = False
-    global distance_to_goal
-    global calc_angle
     
     # Get a map (grid)
     map = {}
@@ -192,7 +164,7 @@ def main():
     # Open the warehouse grid with start and navigate too points
     #fp = open('/home/devuser/catkin_ws/src/Pallet_Project/controller/src/warehouse.txt', 'r')
     #secondary file for chnaging points without taking away base setup
-    fp = open('warehouse.txt', 'r')
+    fp = open('/media/sf_Pallet_Project/controller/src/warehouse.txt', 'r')
     # Loop until there is no more lines
     while len(chars) > 0:
         # Get chars in a line
@@ -240,77 +212,56 @@ def main():
     point_index = 0
     while not rospy.is_shutdown():
         if point_index < len(path):
-            measurements = angleMeasurements(path)
-            calc_angle = measurements[0]
-            distance_to_goal = measurements[1]
+            goal.x = path[point_index][0]
+            goal.y = path[point_index][1]
+            
         else:
             break
         
+        #calculate distance and angle to goal    
+        inc_x = goal.x - x
+        inc_y = goal.y - y
         
+        angle_to_goal = atan2 (inc_y, inc_x)
+        distance_to_goal = numpy.sqrt(inc_x*inc_x + inc_y*inc_y)
+
+        #desired angle - robots acual angle
+        calc_angle = angle_to_goal - theta
 
         #if the robot is not a certian distance away from goal point
         if distance_to_goal >= 0.3:
-
             #Robot had issues at the extremes, +-2*Pi, this offsets number
             #lowest was 5.9, so 5 is generous and should never have issues 
             if calc_angle > 5:
                 calc_angle = calc_angle - (2*pi)
             if calc_angle < -5:
                 calc_angle = calc_angle + (2*pi)
-
             #Left turn
             if calc_angle > 0.2 and turning == False and center_Clear == True:
                 turning = True
                 rc.turn_Direction("left", 0.1)
-                print('Robot Status: Turning left to align with next node')
-
+                print('I am turning left ' + str(calc_angle))
             #Right turn
             if calc_angle < -0.2 and turning == False and center_Clear == True:
                 turning = True
                 rc.turn_Direction("right", 0.1)
-                print("Robot Status: Turning right to align with next node" )
-
+                print("I am turning right " + str(calc_angle))
             #Move forward
             if calc_angle > -0.2 and calc_angle < 0.2 :
-                if rc.check_Center_Clear(slowDownDistance) == False:
-                    
-                    rc.slow_Down()
-                    
-                    if rc.check_Center_Clear(stopDistance) == False:
-                        print("Robot Status: Center Not Clear")
-                        print("Calling Collision Avoidance Function")
-
-                        roa.avoid_obstacle() #Call collision avoidance
-                            
-                        path.pop(0) #Pop off next node
-                        path.pop(0)
-
-                        measurements = angleMeasurements(path)
-                        calc_angle = measurements[0]
-                        distance_to_goal = measurements[1]
-
-
-                        print("CALC ANGLE: "+ str(calc_angle) + "DISTANCE: "+ str(distance_to_goal))
-                        print("AFTER OBSTACLE PATH: " + str(path))
-                        print("NEW COORDINATES: x: " + str(x) + " y: " + str(y))
-                        #rc.move_Straight(0.15)
-                        #continue
-
+                if rc.check_Center_Clear(stopDistance) == False:
+                    rc.stop_Robot()
+                    center_Clear = False
+                    print('Object Detected')
                 if rc.check_Center_Clear(stopDistance) ==True:
-                    print("Robot Status: Center is Clear")
+                    print("Center is clear")
                     center_Clear = True
                     turning = False
                     rc.move_Straight(0.15)
-                    #print("I am moving straight " + str(calc_angle))
-             
-                #print("Obstacle: " + str(obstacle))
-
+                    print("I am moving straight " + str(calc_angle))
         #If at the next point
         else:
-            rc.slow_Down() #Slow down robot
-            #point_index += 1
-            path.pop(0) #If at next point pop that point of node stack
-            print("NEW PATH: " + str(path)) #Print new path
+            rc.slow_Down()
+            point_index += 1
     #When at final point, stop moving
     rc.stop_Robot()
     

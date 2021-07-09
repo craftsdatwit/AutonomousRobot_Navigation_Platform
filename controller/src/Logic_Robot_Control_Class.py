@@ -8,6 +8,7 @@
 
 import rospy
 from geometry_msgs.msg import Twist
+from rospy.client import TIMEOUT_READY
 from sensor_msgs.msg import LaserScan
 import time
 import decimal
@@ -32,8 +33,7 @@ class RobotControl():
         self.cmd = Twist() #Initalize a new object of type Twist
 
         #Create a subscriber that subscribes to the /scan topic
-        self.laser_subscriber = rospy.Subscriber('/scan', LaserScan, self.laser_Callback) 
-      
+        self.laser_subscriber = rospy.Subscriber('/scan', LaserScan, self.laser_Callback)
 
         #Check that LiDAR Sensor is ready
         self.check_Laser_Ready()
@@ -43,6 +43,7 @@ class RobotControl():
         self.rate = rospy.Rate(10)
 
         rospy.on_shutdown(self.shutdownhook)
+
     
     #Checks that sensor is ready
     def check_Laser_Ready(self):
@@ -52,7 +53,7 @@ class RobotControl():
             try:
                 self.laser_msg = rospy.wait_for_message("/scan", LaserScan, timeout=1.0)
                 rospy.logdebug("Current /scan READY=>" + str(self.laser_msg))
-                rospy.loginfo("Checking Laser...READY")
+                #rospy.loginfo("Checking Laser...READY")
                 time.sleep(0)
 
             except:
@@ -177,7 +178,46 @@ class RobotControl():
                 #print("No bottom right opening found")
                 success = 0
                 bottomrightfree = False
-            return bottomrightfree
+        return bottomrightfree
+
+    #Check Right Side is Clear
+    def check_Right_Side_Clear(self, scanDistance):
+        rightside = self.laser_msg.ranges[260:340]
+
+        # Returns False if an object is detected
+        if min(rightside) < scanDistance:
+            return False
+        #Returns true if no object is detected
+        if min(rightside) > scanDistance:
+            return True
+
+       
+    def check_Center_Right_Clear(self, scanDistance):
+        centerright = self.laser_msg.ranges[240:280]
+
+        maxr = max(centerright) 
+        indexr = centerright.index(maxr) 
+        success =0 
+        centerrightfree = False
+
+        if maxr > scanDistance:
+            success +=1 
+            for i in centerright[indexr:]: 
+                if i > scanDistance:
+                    success +=1 
+                else: 
+                    break
+                if success == 28: 
+                    break
+            if success == 28: 
+                #print("Bottom right opening found")
+                success = 0
+                bottomrightfree = True
+            else: 
+                #print("No bottom right opening found")
+                success = 0
+                centerrightfree = False
+        return centerrightfree
 
     #Check if top left is clear
     def check_Top_Left_Clear(self, scanDistance):
@@ -234,6 +274,19 @@ class RobotControl():
                 success = 0
                 bottomleftFree = False
         return bottomleftFree
+
+
+        #Check Left Side is Clear
+    def check_Left_Side_Clear(self, scanDistance):
+        leftside = self.laser_msg.ranges[33:120]
+
+         # Returns False if an object is detected
+        if min(leftside) < scanDistance:
+            return False
+        #Returns true if no object is detected
+        if min(leftside) > scanDistance:
+            return True
+
 
 
      # /// MOVEMENT FUNCTIONS \\\
@@ -309,13 +362,13 @@ class RobotControl():
     def turn_Until_Clear(self, direction, stopDistance):
 
         if direction == "left" and self.check_Center_Clear(stopDistance) == False:
-            print("Turning left")
+            #print("Turning left")
             self.cmd.angular.z = 0.2
             self.vel_publisher.publish(self.cmd)
         
 
         if direction == "right" and self.check_Center_Clear(stopDistance) == False:
-            print("Turning right")
+            #print("Turning right")
             self.cmd.angular.z = -0.2
             self.vel_publisher.publish(self.cmd)
         
@@ -323,14 +376,14 @@ class RobotControl():
     def turn_Direction(self, direction, turnSpeed):
         
          if direction == "left":
-            print("Turning left")
+            #print("Turning left")
             self.cmd.linear.x = 0
             self.cmd.angular.z = turnSpeed
             self.vel_publisher.publish(self.cmd)
         
 
          if direction == "right":
-            print("Turning right")
+            #print("Turning right")
             self.cmd.linear.x = 0
             self.cmd.angular.z = -turnSpeed
             self.vel_publisher.publish(self.cmd)
