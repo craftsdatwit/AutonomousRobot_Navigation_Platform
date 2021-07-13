@@ -7,48 +7,37 @@ from Logic_Robot_Control_Class import RobotControl
 import rospy
 import time
 
-stopDistance = 0.8 #3.5ft
-scanDistance = 1.3
-movespeed = 0.15
-slowDownDistance = 1.524 #5ft
-currentspeed = 0.0
-
-
-
-rc = RobotControl()
-
-#turning = False
-
-
-
-rc.check_Top_Right_Clear(scanDistance)
-rc.check_Bottom_Right_Clear(scanDistance)
-rc.check_Top_Left_Clear(scanDistance)
-rc.check_Bottom_Left_Clear(scanDistance)
-
-#Initalize booleans
-waited = False
-turning = False
-slowdown = False
-turnedRight = False
-turnedLeft = False
 
 class ObstacleAvoidance():
 
-    def avoid_obstacle(self):
-        global stopDistance
-        global scanDistance
-        global movespeed
-        global slowDownDistance
-        global currentspeed
-        global rc
-        global waited
-        global turning
-        global slowdown
-        global turnedLeft
-        global turnedRight
+    def avoid_obstacle(self,name):
+        
+        rc = RobotControl(name) 
+        stopDistance = 0.8 #3.5ft
+        scanDistance = 1.3
+        movespeed = 0.12
+        slowDownDistance = 1.524 #5ft
+        currentspeed = 0.0
 
-        while rc.check_Laser_Ready() == True:
+
+        #New robot control class object
+        #rc = RobotControl() 
+
+        #First scan for quadrants
+        rc.check_Top_Right_Clear(scanDistance)
+        rc.check_Bottom_Right_Clear(scanDistance)
+        rc.check_Top_Left_Clear(scanDistance)
+        rc.check_Bottom_Left_Clear(scanDistance)
+
+        #Initalize booleans
+        waited = False
+        turning = False
+        slowdown = False
+        turnedRight = False
+        turnedLeft = False
+      
+
+        while rc.check_Laser_Ready(name) == True:
 
             if rc.check_Center_Clear(stopDistance) == False and slowdown ==  False and waited == False and turning == False:
                 print("*EMERGENCY STOP* Object Detected at Distance: ")
@@ -107,14 +96,14 @@ class ObstacleAvoidance():
                 slowdown = False
                 rc.move_Straight(movespeed)
 
-                while rc.check_Right_Side_Clear(0.78) == False and turnedLeft == True:
+                while rc.check_Right_Side_Clear(stopDistance) == False and turnedLeft == True:
                     print("Object Detected on Right Side Moving Straight")
-                    rc.check_Laser_Ready()
+                    rc.check_Laser_Ready(name)
                     print(turnedLeft)
 
-                while rc.check_Left_Side_Clear(0.78) == False and turnedRight == True:
+                while rc.check_Left_Side_Clear(stopDistance) == False and turnedRight == True:
                     print("Object Detected on Left Side Moving Straight")
-                    rc.check_Laser_Ready()
+                    rc.check_Laser_Ready(name)
                     print(turnedRight)
 
                 rc.stop_Robot()

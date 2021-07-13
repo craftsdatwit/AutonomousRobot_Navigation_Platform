@@ -15,7 +15,15 @@ import decimal
 
 class RobotControl():
 
-    def __init__(self, robot_name="turtlebot3"):
+    def __init__(self, name):
+
+        #Initalize robot control node 
+        rospy.init_node('robot_control_node', anonymous=True) 
+
+        print(name)
+
+        subName = "/%s/cmd_vel" % (name)
+        pubName = "/%s/scan" % (name)
 
         #Initalize robot control node 
         rospy.init_node('robot_control_node', anonymous=True) 
@@ -24,7 +32,7 @@ class RobotControl():
         rospy.loginfo("Robot Turtlebot3...") 
 
         #Topic variable for cmd velocity
-        cmd_vel_topic='/cmd_vel' 
+        cmd_vel_topic= subName
 
         # We start the publisher for cmd velocity
         self.vel_publisher = rospy.Publisher(cmd_vel_topic, Twist, queue_size=1)
@@ -33,10 +41,11 @@ class RobotControl():
         self.cmd = Twist() #Initalize a new object of type Twist
 
         #Create a subscriber that subscribes to the /scan topic
-        self.laser_subscriber = rospy.Subscriber('/scan', LaserScan, self.laser_Callback)
+        self.laser_subscriber = rospy.Subscriber(pubName, LaserScan, self.laser_Callback)
+      
 
         #Check that LiDAR Sensor is ready
-        self.check_Laser_Ready()
+        self.check_Laser_Ready(name)
 
         self.ctrl_c = False
 
@@ -46,20 +55,23 @@ class RobotControl():
 
     
     #Checks that sensor is ready
-    def check_Laser_Ready(self):
+    def check_Laser_Ready(self,name):
+        
+        pubName = "/%s/scan" % (name)
         self.laser_msg = None
-        rospy.loginfo("Checking Laser...")
+        #rospy.loginfo("Checking Laser...")
         while self.laser_msg is None and not rospy.is_shutdown():
             try:
-                self.laser_msg = rospy.wait_for_message("/scan", LaserScan, timeout=1.0)
-                rospy.logdebug("Current /scan READY=>" + str(self.laser_msg))
+                self.laser_msg = rospy.wait_for_message(pubName, LaserScan, timeout=1.0)
+                #rospy.logdebug("Current /scan READY=>" + str(self.laser_msg))
                 #rospy.loginfo("Checking Laser...READY")
-                time.sleep(0)
+                #time.sleep(0)
 
             except:
                 rospy.logerr("Current /scan not ready yet, retrying for getting scan")
         rospy.loginfo("Checking Laser...COMPLETE")
         return True
+
 
     
     def publish_once_in_cmd_vel(self):
