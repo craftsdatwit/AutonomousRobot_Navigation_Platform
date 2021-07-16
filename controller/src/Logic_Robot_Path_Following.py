@@ -16,18 +16,16 @@ from geometry_msgs.msg import Point, Twist
 from math import atan2, pi
 
 
-
 class pathFollowing():
-
+    
+    #Initialize pathFollowing Class
     def __init__(self,name,warehouseFile):
-
-        print(name)
-        print(warehouseFile)
 
         #Variables for point navigation
         x = 0.0
         y = 0.0
         theta = 0.0
+
         #variables for robot control
         stopDistance = 0.7 
         scanDistance = 1.3
@@ -41,7 +39,7 @@ class pathFollowing():
         turnDistance = 0.3
 
 
-        #set odometry data for robot position
+    #set odometry data for robot position
     def newOdom (self,msg):
         global x
         global y
@@ -124,7 +122,7 @@ class pathFollowing():
                     path.append(current_node.position)
                     current_node = current_node.parent
                 #path.append(start) 
-                # Return reversed path
+                #Return reversed path
                 return path[::-1]
             # Unzip the current node position
             (x, y) = current_node.position
@@ -177,24 +175,24 @@ class pathFollowing():
         calc_angle = angle_to_goal - theta
         return (calc_angle,distance_to_goal)
             
-        # The main entry point for this module
+    # The main entry point for this class
     def main(self, name, warehouseFile):
-        #Call objects
-        pf = pathFollowing(name,warehouseFile)
-        rc = RobotControl(name)
-        roa = ObstacleAvoidance()
-        goal = Point()
 
+        #Call objects
+        pf = pathFollowing(name,warehouseFile) #New pathFollowing object
+        rc = RobotControl(name) #New robotControl object
+        roa = ObstacleAvoidance() #New obstacleAvoidance object
+
+        goal = Point() #Goal is of data type point
+
+        #Create odom name based off of unique robot name. Initialize subscriber to odom topic
         odomName = "/%s/odom" % (name)
         sub = rospy.Subscriber(odomName, Odometry, pf.newOdom) 
 
-       
-
-
-        #set up lasers and booleons for robot control
+        #Check individual robot LiDAR status
         rc.check_Laser_Ready(name)
 
-
+        #Initialize booleans / variables. Distance in M
         turning = False
         center_Clear = True
         obstacle = False
@@ -204,7 +202,9 @@ class pathFollowing():
         scanDistance = 1.3
         movespeed = 0.12
         slowDownDistance = 1.524 #5ft
-            # Get a map (grid)
+
+
+        # Get a map (grid)
         map = {}
         chars = ['c']
         start = None
@@ -245,8 +245,8 @@ class pathFollowing():
         print()
                 
             
-            #The graph starts at (0,0) in the middle of a 21 by 21 grid
-            #This section iterates through the points to adjust for not starting at a corner
+        #The graph starts at (0,0) in the middle of a 21 by 21 grid
+        #This section iterates through the points to adjust for not starting at a corner
         ite = 0 #iteration
         while ite < len(path):
             tempx=path[ite][0]
@@ -284,13 +284,13 @@ class pathFollowing():
                 #Left turn
                 if calc_angle > 0.2 and turning == False and center_Clear == True:
                     turning = True
-                    rc.turn_Direction("left", 0.08)
+                    rc.turn_Direction("left", 0.2, 0.05)
                     print('Robot Status: Turning left to align with next node')
 
                 #Right turn
                 if calc_angle < -0.2 and turning == False and center_Clear == True:
                     turning = True
-                    rc.turn_Direction("right", 0.08)
+                    rc.turn_Direction("right", 0.2, 0.05)
                     print("Robot Status: Turning right to align with next node" )
 
                 #Move forward if robot is facing goal node
@@ -321,7 +321,7 @@ class pathFollowing():
                             print("CALC ANGLE: "+ str(calc_angle) + "DISTANCE: "+ str(distance_to_goal))
                             print("AFTER OBSTACLE PATH: " + str(path))
                             print("NEW COORDINATES: x: " + str(x) + " y: " + str(y))
-                            #rc.move_Straight(0.15)
+                            #rc.move_Straight(0.1)
                             #continue
                     
                     #If center is clear, move robot straight
@@ -329,7 +329,7 @@ class pathFollowing():
                         print("Robot Status: Center is Clear")
                         center_Clear = True
                         turning = False
-                        rc.move_Straight(0.12)
+                        rc.move_Straight(0.1)
                         #print("I am moving straight " + str(calc_angle))
                 
                     #print("Obstacle: " + str(obstacle))
