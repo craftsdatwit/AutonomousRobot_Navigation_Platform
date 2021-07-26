@@ -310,7 +310,7 @@ class RobotControl():
 
     #Slows down the robot's movement rapidly
     def slow_Down(self):
-        for i in self.float_Range(0.1,0.05,0.00001):
+        for i in self.float_Range(0.2,0.05,0.00001):
             self.cmd.linear.x = i
             if i < 0.05:
                 self.cmd.linear.x = 0.05
@@ -383,18 +383,18 @@ class RobotControl():
             self.vel_publisher.publish(self.cmd)
         
     #Turns the robot either right or left with a given speed
-    def turn_Direction(self, direction, turnSpeed,straightSpeed):
+    def turn_Direction(self, direction, turnSpeed):
         
          if direction == "left":
             #print("Turning left")
-            self.cmd.linear.x = straightSpeed
+            self.cmd.linear.x = 0
             self.cmd.angular.z = turnSpeed
             self.vel_publisher.publish(self.cmd)
         
 
          if direction == "right":
             #print("Turning right")
-            self.cmd.linear.x = straightSpeed
+            self.cmd.linear.x = 0
             self.cmd.angular.z = -turnSpeed
             self.vel_publisher.publish(self.cmd)
 

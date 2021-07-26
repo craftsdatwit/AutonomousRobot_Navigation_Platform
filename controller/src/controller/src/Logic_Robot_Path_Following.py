@@ -284,13 +284,13 @@ class pathFollowing():
                 #Left turn
                 if calc_angle > 0.2 and turning == False and center_Clear == True:
                     turning = True
-                    rc.turn_Direction("left", 0.2, 0.05)
+                    rc.turn_Direction("left", 0.08)
                     print('Robot Status: Turning left to align with next node')
 
                 #Right turn
                 if calc_angle < -0.2 and turning == False and center_Clear == True:
                     turning = True
-                    rc.turn_Direction("right", 0.2, 0.05)
+                    rc.turn_Direction("right", 0.08)
                     print("Robot Status: Turning right to align with next node" )
 
                 #Move forward if robot is facing goal node
@@ -321,7 +321,7 @@ class pathFollowing():
                             print("CALC ANGLE: "+ str(calc_angle) + "DISTANCE: "+ str(distance_to_goal))
                             print("AFTER OBSTACLE PATH: " + str(path))
                             print("NEW COORDINATES: x: " + str(x) + " y: " + str(y))
-                            #rc.move_Straight(0.1)
+                            #rc.move_Straight(0.15)
                             #continue
                     
                     #If center is clear, move robot straight
@@ -329,7 +329,7 @@ class pathFollowing():
                         print("Robot Status: Center is Clear")
                         center_Clear = True
                         turning = False
-                        rc.move_Straight(0.1)
+                        rc.move_Straight(0.12)
                         #print("I am moving straight " + str(calc_angle))
                 
                     #print("Obstacle: " + str(obstacle))
