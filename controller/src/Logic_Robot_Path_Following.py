@@ -19,7 +19,7 @@ from math import atan2, pi
 class pathFollowing():
     
     #Initialize pathFollowing Class
-    def __init__(self,name,warehouseFile):
+    def __init__(self,name,warehouseFile, yoffset):
 
         #Variables for point navigation
         x = 0.0
@@ -27,10 +27,10 @@ class pathFollowing():
         theta = 0.0
 
         #variables for robot control
-        stopDistance = 0.7 
+        stopDistance = 0.9
         scanDistance = 1.3
         movespeed = 0.12
-        slowDownDistance = 1.524 #5ft
+        slowDownDistance = 1.7#5ft
         currentspeed = 0.0
         speed = Twist()
         distance_to_goal = 0.0
@@ -176,10 +176,10 @@ class pathFollowing():
         return (calc_angle,distance_to_goal)
             
     # The main entry point for this class
-    def main(self, name, warehouseFile):
+    def main(self, name, warehouseFile, yoffset):
 
         #Call objects
-        pf = pathFollowing(name,warehouseFile) #New pathFollowing object
+        pf = pathFollowing(name,warehouseFile, yoffset) #New pathFollowing object
         rc = RobotControl(name) #New robotControl object
         roa = ObstacleAvoidance() #New obstacleAvoidance object
 
@@ -198,7 +198,7 @@ class pathFollowing():
         obstacle = False
         global distance_to_goal
         global calc_angle
-        stopDistance = 0.7 
+        stopDistance = 0.8
         scanDistance = 1.3
         movespeed = 0.12
         slowDownDistance = 1.524 #5ft
@@ -252,7 +252,7 @@ class pathFollowing():
             tempx=path[ite][0]
             tempx = tempx - 10 #starting point is (0,0), but thinks its at (11,11) 
             tempy=path[ite][1]
-            tempy = tempy - 10
+            tempy = tempy - 10 
             #-y becuase it runs the opposite way then expected
             path[ite]= (tempx, -tempy) 
             ite += 1
@@ -294,7 +294,7 @@ class pathFollowing():
                     print("Robot Status: Turning right to align with next node" )
 
                 #Move forward if robot is facing goal node
-                if calc_angle > -0.2 and calc_angle < 0.2 :
+                if calc_angle > -0.15 and calc_angle < 0.15 :
                     #If center is blocked by an obstacle for slowdown distance threshold
                     if rc.check_Center_Clear(slowDownDistance) == False:
 
@@ -310,7 +310,7 @@ class pathFollowing():
 
                             #Pop's the next 2 nodes off of the path stack
                             path.pop(0)
-                            path.pop(0)
+                           #path.pop(0)
                             
                             #Recalculate angles to next node
                             measurements = pf.angleMeasurements(path, goal) 
@@ -326,11 +326,11 @@ class pathFollowing():
                     
                     #If center is clear, move robot straight
                     if rc.check_Center_Clear(stopDistance) ==True:
-                        print("Robot Status: Center is Clear")
+                        #print("Robot Status: Center is Clear")
                         center_Clear = True
                         turning = False
                         rc.move_Straight(0.1)
-                        #print("I am moving straight " + str(calc_angle))
+                       # print("I am moving straight " + str(calc_angle))
                 
                     #print("Obstacle: " + str(obstacle))
 
@@ -338,6 +338,7 @@ class pathFollowing():
             else:
                 rc.slow_Down() #Slow down robot
                 #point_index += 1
+          
                 path.pop(0) #If at next point pop that point of node stack
                 print("NEW PATH: " + str(path)) #Print new path
         #When at final point, stop moving

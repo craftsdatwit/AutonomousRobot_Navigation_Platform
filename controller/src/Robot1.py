@@ -4,8 +4,10 @@ from Logic_Robot_Path_Following import pathFollowing
 
 name1 = "robot1"
 
-warehouseName = "warehouse.txt"
+yoffset = 0
 
-pf1 = pathFollowing(name1, warehouseName) #Passes in robot name and warehouse map path file to the pathFollowing oject
+warehouseName = "warehouse_test.txt"
 
-pf1.main(name1,warehouseName) #Calls the main method with those same variables
+pf1 = pathFollowing(name1, warehouseName, yoffset) #Passes in robot name and warehouse map path file to the pathFollowing oject
+
+pf1.main(name1,warehouseName, yoffset) #Calls the main method with those same variables

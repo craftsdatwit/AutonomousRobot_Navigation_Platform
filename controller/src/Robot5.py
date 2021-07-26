@@ -2,11 +2,11 @@
 
 from Logic_Robot_Path_Following import pathFollowing
 
-name2 = "robot2"
+name2 = "robot5"
 
 yoffset = 1
 
-warehouseName = "warehouse2.txt"
+warehouseName = "warehouse5.txt"
 
 pf2 = pathFollowing(name2, warehouseName, yoffset) #Passes in robot name and warehouse map path file to the pathFollowing oject
 

@@ -16,8 +16,8 @@ class ObstacleAvoidance():
         rc = RobotControl(name) #Create new robotControl object with specific robot name passed 
 
         #Initialize threshold variables
-        stopDistance = 0.8 #3.5ft
-        scanDistance = 1.3
+        stopDistance = 1.0 #3.5ft
+        scanDistance = 1.8
         movespeed = 0.12
         slowDownDistance = 1.524 #5ft
         currentspeed = 0.0
@@ -58,7 +58,7 @@ class ObstacleAvoidance():
             if rc.check_Center_Clear(stopDistance) == False and waited == False and slowdown == True and turning == False:
                 rc.stop_Robot()
                 print("Object Detected within stopping distance --> Waiting for 5 seconds")
-                time.sleep(0)
+                time.sleep(2)
                 waited = True
 
             #If top right is clear and the robot has waited and the robot is not turning --> turning is true, turn robot to the right and check center clear with stopDistance
@@ -100,13 +100,13 @@ class ObstacleAvoidance():
                 rc.move_Straight(movespeed)
 
                 #While an object is detected on the right side and the robot turned left. Move straight to clear object
-                while rc.check_Right_Side_Clear(stopDistance) == False and turnedLeft == True:
+                while rc.check_Right_Side_Clear(0.8) == False and turnedLeft == True and rc.check_Center_Clear(0.8) == True:
                     print("Object Detected on Right Side Moving Straight")
                     rc.check_Laser_Ready(name)
                     print(turnedLeft)
                 
                 #While an object is detected on the left side and the robot turned left. Move straight to clear object
-                while rc.check_Left_Side_Clear(stopDistance) == False and turnedRight == True:
+                while rc.check_Left_Side_Clear(0.8) == False and turnedRight == True and rc.check_Center_Clear(0.8) == True:
                     print("Object Detected on Left Side Moving Straight")
                     rc.check_Laser_Ready(name)
                     print(turnedRight)
