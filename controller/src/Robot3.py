@@ -1,12 +1,12 @@
 #Purpose: Creates an instance of the pathFollowing algorithm with a unique robot name and map
 
-from Logic_Robot_Path_Following import pathFollowing
+from Robot_Path_Following import pathFollowing
 
 name2 = "robot3"
 
 yoffset = -1
 
-warehouseName = "warehouse3.txt"
+warehouseName = "./Warehouse Map Files/robot3demo.txt"
 
 pf2 = pathFollowing(name2, warehouseName, yoffset) #Passes in robot name and warehouse map path file to the pathFollowing oject
 

@@ -3,7 +3,7 @@
 #Authors: David Crafts & Jake Sousa 
 
 
-from Logic_Robot_Control_Class import RobotControl
+from Robot_Control_Class import RobotControl
 import rospy
 import time
 
@@ -58,7 +58,7 @@ class ObstacleAvoidance():
             if rc.check_Center_Clear(stopDistance) == False and waited == False and slowdown == True and turning == False:
                 rc.stop_Robot()
                 print("Object Detected within stopping distance --> Waiting for 5 seconds")
-                time.sleep(2)
+                time.sleep(6)
                 waited = True
 
             #If top right is clear and the robot has waited and the robot is not turning --> turning is true, turn robot to the right and check center clear with stopDistance
