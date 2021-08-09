@@ -1,8 +1,8 @@
-# Pallet Project
+# Autonomous Robot Navigation Platform 2.0
 
 ## Introduction 
 
-Using ROS and Gazebo, this project enables a robot to navigate a warehouse environment with path-following and collision avoidance algorithms.
+Using ROS and Gazebo, this platform enables robots to navigate a warehouse environment with path-following and collision avoidance algorithms.
 
 ## Features
 1.) Collision avoidance / Object Detection
