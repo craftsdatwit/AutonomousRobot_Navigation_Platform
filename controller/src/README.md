@@ -1,13 +1,13 @@
-# Pallet Project
+# Autonomous Robot Navigation Platform 2.0
 
 ## Introduction 
 
-Using ROS and Gazebo, this project enables a robot to navigate a warehouse environment with path-following and collision avoidance algorithms.
+Using ROS and Gazebo, this platform enables robots to navigate a warehouse environment with path-following and collision avoidance algorithms.
 
 ## Features
 1.) Collision avoidance / Object Detection
 
-The robot control class 'Logic_Robot_Control_Class.py', located in Pallet_Project/controller/src/ contains all of the necessary functions for full collision avoidance / object detection. While not all of the functions were implemented into the path following algorithm, they are ready to be implemented within the robot control class. Originally the functions were in a standard file, however, they were then broken out into a class file for easier implementation and integration with any algorithm necessary. Any robot algorithm developed in this manner can use our robot control class to implement full collision avoidance / object detection with ease. 
+The robot control class 'Robot_Control_Class.py', located in /controller/src/ contains all of the necessary functions for full collision avoidance / object detection. While not all of the functions were implemented into the path following algorithm, they are ready to be implemented within the robot control class. Originally the functions were in a standard file, however, they were then broken out into a class file for easier implementation and integration with any algorithm necessary. Any robot algorithm developed in this manner can use our robot control class to implement full collision avoidance / object detection with ease. 
 
 2.) Path Following
 

@@ -150,9 +150,9 @@ class RobotControl():
                     success +=1 
                 else: #if in the scan there's an object 
                     break
-                if success == 28: #if an opening has been found that's wide enough for the robot
+                if success == 40: #if an opening has been found that's wide enough for the robot
                     break
-            if success == 28: #if an opening is found
+            if success == 40: #if an opening is found
                 #print("Top right opening found")
                 success = 0
                 toprightfree = True
@@ -178,9 +178,9 @@ class RobotControl():
                     success +=1 
                 else: 
                     break
-                if success == 28: 
+                if success == 40: 
                     break
-            if success == 28: 
+            if success == 40: 
                 #print("Bottom right opening found")
                 success = 0
                 bottomrightfree = True
@@ -217,9 +217,9 @@ class RobotControl():
                     success +=1 
                 else: 
                     break
-                if success == 28: 
+                if success == 40: 
                     break
-            if success == 28: 
+            if success == 40: 
                 #print("Bottom right opening found")
                 success = 0
                 bottomrightfree = True
@@ -245,9 +245,9 @@ class RobotControl():
                     success +=1
                 else:
                     break
-                if success == 28:
+                if success == 40:
                     break
-            if success == 28:
+            if success == 40:
                 #print("Top left opening found")
                 success = 0
                 leftFree = True
@@ -273,9 +273,9 @@ class RobotControl():
                     success +=1
                 else:
                     break
-                if success == 28:
+                if success == 40:
                     break
-            if success == 28:
+            if success == 40:
                 #print("Bottom left opening found")
                 success = 0
                 bottomleftFree = True

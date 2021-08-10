@@ -8,7 +8,7 @@ import heapq
 import numpy
 import time
 
-from Logic_Robot_Control_Class import RobotControl
+from Robot_Control_Class import RobotControl
 from obstacle_avoidance import ObstacleAvoidance
 from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion
@@ -19,7 +19,7 @@ from math import atan2, pi
 class pathFollowing():
     
     #Initialize pathFollowing Class
-    def __init__(self,name,warehouseFile):
+    def __init__(self,name,warehouseFile, yoffset):
 
         #Variables for point navigation
         x = 0.0
@@ -27,10 +27,10 @@ class pathFollowing():
         theta = 0.0
 
         #variables for robot control
-        stopDistance = 0.7 
+        stopDistance = 0.9
         scanDistance = 1.3
         movespeed = 0.12
-        slowDownDistance = 1.524 #5ft
+        slowDownDistance = 1.7#5ft
         currentspeed = 0.0
         speed = Twist()
         distance_to_goal = 0.0
@@ -176,10 +176,10 @@ class pathFollowing():
         return (calc_angle,distance_to_goal)
             
     # The main entry point for this class
-    def main(self, name, warehouseFile):
+    def main(self, name, warehouseFile, yoffset):
 
         #Call objects
-        pf = pathFollowing(name,warehouseFile) #New pathFollowing object
+        pf = pathFollowing(name,warehouseFile, yoffset) #New pathFollowing object
         rc = RobotControl(name) #New robotControl object
         roa = ObstacleAvoidance() #New obstacleAvoidance object
 
@@ -198,7 +198,7 @@ class pathFollowing():
         obstacle = False
         global distance_to_goal
         global calc_angle
-        stopDistance = 0.7 
+        stopDistance = 0.8
         scanDistance = 1.3
         movespeed = 0.12
         slowDownDistance = 1.524 #5ft
@@ -252,7 +252,7 @@ class pathFollowing():
             tempx=path[ite][0]
             tempx = tempx - 10 #starting point is (0,0), but thinks its at (11,11) 
             tempy=path[ite][1]
-            tempy = tempy - 10
+            tempy = tempy - 10 
             #-y becuase it runs the opposite way then expected
             path[ite]= (tempx, -tempy) 
             ite += 1
@@ -269,13 +269,12 @@ class pathFollowing():
             else:
                 break
             
-            
-
             #if the robot is not a certian distance away from goal point
             if distance_to_goal >= 0.3:
 
                 #Robot had issues at the extremes, +-2*Pi, this offsets number
                 #lowest was 5.9, so 5 is generous and should never have issues 
+
                 if calc_angle > 5:
                     calc_angle = calc_angle - (2*pi)
                 if calc_angle < -5:
@@ -284,7 +283,7 @@ class pathFollowing():
                 #Left turn
                 if calc_angle > 0.2 and turning == False and center_Clear == True:
                     turning = True
-                    rc.turn_Direction("left", 0.2, 0.05)
+                    rc.turn_Direction("left", 0.5, 0.05)
                     print('Robot Status: Turning left to align with next node')
 
                 #Right turn
@@ -308,9 +307,10 @@ class pathFollowing():
 
                             roa.avoid_obstacle(name) #Call collision avoidance
 
-                            #Pop's the next 2 nodes off of the path stack
+                            #Pop's the next node off of the path stack
                             path.pop(0)
-                            path.pop(0)
+                           
+                            print("Recalculating Angle")
                             
                             #Recalculate angles to next node
                             measurements = pf.angleMeasurements(path, goal) 
@@ -321,23 +321,18 @@ class pathFollowing():
                             print("CALC ANGLE: "+ str(calc_angle) + "DISTANCE: "+ str(distance_to_goal))
                             print("AFTER OBSTACLE PATH: " + str(path))
                             print("NEW COORDINATES: x: " + str(x) + " y: " + str(y))
-                            #rc.move_Straight(0.1)
-                            #continue
+                           
                     
                     #If center is clear, move robot straight
                     if rc.check_Center_Clear(stopDistance) ==True:
-                        print("Robot Status: Center is Clear")
+                        #print("Robot Status: Center is Clear")
                         center_Clear = True
                         turning = False
-                        rc.move_Straight(0.1)
+                        rc.move_Straight(0.15)
                         #print("I am moving straight " + str(calc_angle))
                 
-                    #print("Obstacle: " + str(obstacle))
-
             #If at the next point
             else:
-                rc.slow_Down() #Slow down robot
-                #point_index += 1
                 path.pop(0) #If at next point pop that point of node stack
                 print("NEW PATH: " + str(path)) #Print new path
         #When at final point, stop moving
