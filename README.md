@@ -17,7 +17,7 @@ The path following script, Robot_Path_Following.py located in Pallet_Project/con
 
 ### Installation
 
-1.) Install Ubuntu 20.04 LTS (or later) on a virtual machine or stand alone machine [VirtualBox](https://www.virtualbox.org/).
+1.) Install Ubuntu 20.04 LTS (or later) on a virtual machine [VirtualBox](https://www.virtualbox.org/) or stand alone machine.
 
 2.) Upon installation, visit [ROS Install](http://wiki.ros.org/Installation/Ubuntu) and enter the following commands on a sudo terminal session. 
 
