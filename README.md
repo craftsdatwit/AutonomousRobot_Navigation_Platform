@@ -72,7 +72,11 @@ This loads in the robots unique path map found within the Warehouse Map files di
 
 https://youtu.be/JdTmplTQyB0
 
-The demo video highlights the integration of both path-following and collision avoidance algorithms with multi-robot support. This was run within the demo enviornment located in the Warehouse Files directory with the large rectangles being no go zones and the smaller boxes being dynamic obstacles for the robots to avoid.
+The demo video highlights the integration of both path-following and collision avoidance algorithms with multi-robot support. This was run within the demo enviornment located in the Warehouse Files directory with the large rectangles being no go zones and the smaller boxes being dynamic obstacles for the robots to avoid. This run was sped up as it took over 10 minutes to run and highlights the core functionaly of the platform.
+
+https://youtu.be/kYpcAFGEUJY
+
+This video is a lighthearted and comical demo video showcasing two robots with voiceover commentary about what is occuring during the video. This video was recorded for Wentworth's Senior Project showcase
 
 ## Road Map
 * **Release 2.5** 
@@ -86,5 +90,5 @@ The demo video highlights the integration of both path-following and collision a
 
 - David Crafts (craftsd@wit.edu), Team Lead / Collision Avoidance Developer
 - Jake Sousa (sousaj8@wit.edu), Collision Avoidance Developer
+- - William McLellan (mclellanw@wit.edu), Autonomous Navigation Developer
 - Nathan Robson (robsonn@wit.edu), Autonomous Navigation Developer
-- William McLellan (mclellanw@wit.edu), Autonomous Navigation Developer
