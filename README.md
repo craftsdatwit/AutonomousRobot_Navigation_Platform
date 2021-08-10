@@ -13,6 +13,10 @@ The robot control class 'Robot_Control_Class.py', located in Pallet_Project/cont
 
 The path following script, Robot_Path_Following.py located in Pallet_Project/controller/src/, is what enables the robot to calculate the fastest path of any two points on the known map and drive autonomously from its current poisition to the new calculated point. This navigation system takes advantage of the A* algorithm, a graph traversal and path search algorithm, which is known for its optimality. This algorithm requires the creation of nodes, which coincide with the points of the graph in the search. The starting node is the first location, which then branches to all surrounding nodes, and calculating what is called the cost, or the numerical value of one node to another. those connected nodes are considered the 'children' nodes of the starting 'parent' node. The children then branch there own children nodes, and add that cost to the total cost of that path. This continues branching until the end point is reached, and the path of nodes with the least overall cost is the shortest path. The only real issue with this algorithm, the node data is saved locally, so on a very expansive map memory issues could occur, however on grids of smaller sixe this is not an issue.
 
+3.) Multi-Robot Support
+
+New in version 2.0 is the support for multiple robots with their own unqiue path following and collision avoidance. This allows for testing scalability of the platform across multiple robots given a multitude of test scenarios. 
+
 ## Getting Started
 
 ### Installation
