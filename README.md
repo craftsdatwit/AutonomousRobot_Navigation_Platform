@@ -17,9 +17,9 @@ The path following script, Robot_Path_Following.py located in Pallet_Project/con
 
 New in version 2.0 is the support for multiple robots with their own unqiue path following and collision avoidance. This allows for testing scalability of the platform across multiple robots given a multitude of test scenarios. 
 
-## Getting Started
+### Getting Started / Running the Code
 
-### Installation
+## Installation
 
 1.) Install Ubuntu 20.04 LTS (or later) on a virtual machine [VirtualBox](https://www.virtualbox.org/) or stand alone machine.
 
@@ -42,7 +42,9 @@ sudo apt install ros-noetic-desktop-full #Full installation of ROS Noetic / Gaze
 
 6.) To get the demo world installed, please follow the readme instructions within the Warehouse directory.
 
-6.) Once multi-robot support has been setup, from ~/catkin_ws run a source devel/setup.bash then run 
+## Running the Code
+
+Once all other steps have been followed, from ~/catkin_ws run a source devel/setup.bash then run 
 
 ```bash
 
@@ -50,37 +52,35 @@ roslaunch multi_robot warehousemultirobot.launch
 
 ```
 
-5.) To get the warehouse files installed, follow the readme within the Warehouse Files folder
+This should launch the demo world with 5 robots.
 
-### Running the Navigation Code
-
-1.) To run the navigation code, you need to have the Logic_Robot_Control_Class.py, the Logic_Pallet_Path_Following.py, and a text file, ours used is the warehouse.txt.
-
-2.) The first step is to create a grid layout of the enviroinment where you are running the code. Gazebo has a 21x21 grid which this code utalizes. The map you make will need to have '1' symbols denoting walls and unreachable areas, and '0' symbols denoting accessible paths or open ground. warehouse.txt shows an example.
-
-3.) The map you make also needs two unique points. the starting location of your robot should be denoted as the '@' symbol, and must be an open space where the robot is when the script starts. THe end goal is denoted as the '$' symbol, and must also be placed on an open spot. the algorithm requires both of these symbols to calculate a path.
-
-4.) After settomg up your text file, edit the line 167 in Logic_Pallet_Path_Finding to match the name of your file instead of warehouse.txt. Following the above method of running the simulation, start the simulation with your robot in the environment you have mapped out.
-
-5.) Navigate to the Pallet_Project/controller/src/ file, and use the fillowing command to run the python file, and the robot will travel to the point denoted on your map by the '$' symbol:
+8.) To get the robots moving, each robot has a corresponding python file within the /controller/src directory that can be run by browing to the directory then entering 
 
 ```bash
-python Logic_Robot_Path_Following.py
+
+python3 Robot1.py
+
 ```
+
+This loads in the robots unique path map found within the Warehouse Map files directory under /controller/src. The @ represents the start symbol and the $ represnets the end goal.
+
+9.) Each robot will need it's own terminal tab and will need to be luanched like in step 8 to be run cocurrently. The large blocks of 1's within each map are predefined "no-go zones" that can be easily changed to 0's to represent free spaces.
+
+10.) These maps can be modified but are to scale of the enviornment, feel free to drag in dynamic obstacles from gazebo or play around with different no go zones. This is a sanbox envionrnment so have fun!
 
 ## Demo Video
 
-https://youtu.be/mic3iBC6ELM
+https://youtu.be/JdTmplTQyB0
 
-The demo video highlights the path following with object detection algorithm and the full collision avoidance suite. The code for demo two is located within the collision avoidance branch, this is where the robot control class was developed but was migrated over for integration with the path following algorithm.
+The demo video highlights the integration of both path-following and collision avoidance algorithms with multi-robot support. This was run within the demo enviornment located in the Warehouse Files directory with the large rectangles being no go zones and the smaller boxes being dynamic obstacles for the robots to avoid.
 
 ## Road Map
-* **Release 1.0** 
-    * Establish a system that enables robot to navigate from point A to B with a lightweight version of the collision avoidance algorithms. This will enable the robot to come to a complete stop and wait until detected object is removed before continuing to its destination. 
-* **Release 1.5**
-    * Upgrade from release 1.0 to a more robust version of the path folllwing algorithm. In this release, the robot would integrate full collision avoidance with the ability to move around an object and recompute it's path to the desination in real time.
-* **Release 2.0**
-    * This release would have the ability to add a second robot to the simulation.
+* **Release 2.5** 
+    * Migrate the current implementation off of Gazebo to a more robust graphical application such as Unity.
+* **Release 3.0**
+    * Implement a reverse function and other minor code refinements to improve the experience.
+* **Release 4.0**
+    * Implement multi-robot awareness and dynamic path editing for a more robust navigation system allowing robots to be aware of other robots current locations, marking them as no go zones. Also allowing each robot to dynamically edit it's own path, recalcuating based on given stimuli. 
 
 ## Contributors
 
