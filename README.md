@@ -68,7 +68,7 @@ This loads in the robots unique path map found within the Warehouse Map files di
 
 10.) These maps can be modified but are to scale of the enviornment, feel free to drag in dynamic obstacles from gazebo or play around with different no go zones. This is a sanbox envionrnment so have fun!
 
-## Demo Video
+## Demo Videos
 
 https://youtu.be/JdTmplTQyB0
 
