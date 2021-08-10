@@ -1,5 +1,5 @@
 HOW TO INSTALL THESE FILES
- After cloning the turtlebot 3 repo: https://automaticaddison.com/how-to-launch-the-turtlebot3-simulation-with-ros/
+ After following the root readme.
 
 1.) The warehouse.world file must go in the ~/catkin_ws/src/turtlebot3_simulations/turtlebot3_gazebo/worlds folder
 
