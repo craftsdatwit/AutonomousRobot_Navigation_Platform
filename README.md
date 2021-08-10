@@ -40,6 +40,8 @@ sudo apt install ros-noetic-desktop-full #Full installation of ROS Noetic / Gaze
 
 5.) For multi-robot support please follow the guide here: https://mywentworth-my.sharepoint.com/:w:/g/personal/craftsd_wit_edu/ERLpnHlVpF5Mv47ig-ZlgO0BGA20GwfDFfZiV_AzffQYKw?e=Zmn8Jd
 
+6.) To get the demo world installed, please follow the readme instructions within the Warehouse directory.
+
 6.) Once multi-robot support has been setup, from ~/catkin_ws run a source devel/setup.bash then run 
 
 ```bash
