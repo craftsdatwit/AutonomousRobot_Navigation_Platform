@@ -38,6 +38,16 @@ sudo apt install ros-noetic-desktop-full #Full installation of ROS Noetic / Gaze
 
 4.) Upon creation of your ~/catkin_ws folder, navigate to this website: [Automatic Addison](https://automaticaddison.com/how-to-launch-the-turtlebot3-simulation-with-ros/) and follow the steps to clone the turtlebot3 repo into your ~/catkin_ws folder. *Note: Follow the instructions for the Waffle Pi Turtlebot3 robot.
 
+5.) For multi-robot support please follow the guide here: https://mywentworth-my.sharepoint.com/:w:/g/personal/craftsd_wit_edu/ERLpnHlVpF5Mv47ig-ZlgO0BGA20GwfDFfZiV_AzffQYKw?e=Zmn8Jd
+
+6.) Once multi-robot support has been setup, from ~/catkin_ws run a source devel/setup.bash then run 
+
+```bash
+
+roslaunch multi_robot warehousemultirobot.launch
+
+```
+
 5.) To get the warehouse files installed, follow the readme within the Warehouse Files folder
 
 ### Running the Navigation Code
