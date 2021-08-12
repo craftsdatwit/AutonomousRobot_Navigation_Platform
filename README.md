@@ -90,5 +90,5 @@ This video is a lighthearted and comical demo video showcasing two robots with v
 
 - David Crafts (craftsd@wit.edu), Team Lead / Collision Avoidance Developer
 - Jake Sousa (sousaj8@wit.edu), Collision Avoidance Developer
-- - William McLellan (mclellanw@wit.edu), Autonomous Navigation Developer
+- William McLellan (mclellanw@wit.edu), Autonomous Navigation Developer
 - Nathan Robson (robsonn@wit.edu), Autonomous Navigation Developer
