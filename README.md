@@ -54,7 +54,7 @@ roslaunch multi_robot warehousemultirobot.launch
 
 This should launch the demo world with 5 robots.
 
-8.) To get the robots moving, each robot has a corresponding python file within the /controller/src directory that can be run by browing to the directory then entering 
+7.) To get the robots moving, each robot has a corresponding python file within the /controller/src directory that can be run by browing to the directory then entering 
 
 ```bash
 
@@ -64,9 +64,9 @@ python3 Robot1.py
 
 This loads in the robots unique path map found within the Warehouse Map files directory under /controller/src. The @ represents the start symbol and the $ represnets the end goal.
 
-9.) Each robot will need it's own terminal tab and will need to be luanched like in step 8 to be run cocurrently. The large blocks of 1's within each map are predefined "no-go zones" that can be easily changed to 0's to represent free spaces.
+8.) Each robot will need it's own terminal tab and will need to be luanched like in step 8 to be run cocurrently. The large blocks of 1's within each map are predefined "no-go zones" that can be easily changed to 0's to represent free spaces.
 
-10.) These maps can be modified but are to scale of the enviornment, feel free to drag in dynamic obstacles from gazebo or play around with different no go zones. This is a sanbox envionrnment so have fun!
+9.) These maps can be modified but are to scale of the enviornment, feel free to drag in dynamic obstacles from gazebo or play around with different no go zones. This is a sanbox envionrnment so have fun!
 
 ## Demo Videos
 
